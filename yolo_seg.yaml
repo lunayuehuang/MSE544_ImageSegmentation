@@ -1,6 +1,0 @@
-path: d:\544-Lexar-2026Apr7-Unet-v5 - Student Copy\mos2_dataset
-train: images/train
-val:   images/val
-
-nc: 1
-names: ['defect']
