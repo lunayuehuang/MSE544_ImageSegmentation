@@ -2,7 +2,7 @@
 
 A hands-on tutorial for **MSE544 (Spring 2026)** that walks students through a complete image-segmentation workflow using **U-Net**, applied to a real materials-science dataset of **MoS₂** scanning transmission electron microscopy (STEM) images. The goal is to identify and mask out **defects (voids)** in the material.
 
-**Instructors:** Max Fu, Luna Huang, Andrew Scott
+**Instructors:** Huilong (Max) Fu, Luna Huang, Andrew Scott
 
 ---
 
@@ -21,11 +21,12 @@ A hands-on tutorial for **MSE544 (Spring 2026)** that walks students through a c
 | Path                                                                | Description                                                    |
 | ------------------------------------------------------------------- | -------------------------------------------------------------- |
 | [L123-UNet-student-copy-v0.7.ipynb](L123-UNet-student-copy-v0.7.ipynb) | Student notebook — contains 8 questions + improvement section |
-| mos2/                                                         | Training images + labels (some labels removed)                 |
-| mos2_additional_training_labels/   | Extra training labels students can add back to "mos2/"          |
-| mos2_val_images_labeled/                   | Fixed validation set (3 labeled images)                        |
-| mos2_test_images_unlabeled/             | Unlabeled test images (14 images)                              |
 | [image_data.zip](image_data.zip)                                       | Zipped dataset for quick upload to Colab                       |
+|  mos2/                                                         | Training images + labels (some labels removed)                 |
+|  mos2_additional_training_labels/   | Extra training labels students can add back to "mos2/"          |
+|  mos2_val_images_labeled/                   | Fixed validation set (3 labeled images)                        |
+|  mos2_test_images_unlabeled/             | Unlabeled test images (14 images)                              |
+
 
 ---
 
