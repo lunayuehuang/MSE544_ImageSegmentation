@@ -22,22 +22,21 @@ A hands-on tutorial for **MSE544 (Spring 2026)** that walks students through a c
 | ------------------------------------------------------------------- | -------------------------------------------------------------- |
 | [L123-UNet-student-copy-v0.7.ipynb](L123-UNet-student-copy-v0.7.ipynb) | Student notebook — contains 8 questions + improvement section |
 | [image_data.zip](image_data.zip)                                       | Zipped dataset for quick upload to Colab                       |
-|  mos2/                                                         | Training images + labels (some labels removed)                 |
-|  mos2_additional_training_labels/   | Extra training labels students can add back to "mos2/"          |
-|  mos2_val_images_labeled/                   | Fixed validation set (3 labeled images)                        |
-|  mos2_test_images_unlabeled/             | Unlabeled test images (14 images)                              |
-
+| mos2/                                                               | Training images + labels (some labels removed)                 |
+| mos2_additional_training_labels/                                    | Extra training labels students can add back to "mos2/"         |
+| mos2_val_images_labeled/                                            | Fixed validation set (3 labeled images)                        |
+| mos2_test_images_unlabeled/                                         | Unlabeled test images (14 images)                              |
 
 ---
 
-## Introduction of Image Segmentation
+## 1. Introduction of Image Segmentation
 
 In digital image processing and computer vision, image segmentation is the process of partitioning a digital image into multiple image segments, also know as image regions or image objects (sets of pixels). The goal of segmentation is to simplify and/or change the representation of an image into something that is more meaningful and easier to analyze…
 https://en.wikipedia.org/wiki/Image_segmentation
 
 ---
 
-## U-Net architecture and workflow
+## 2. U-Net architecture and workflow
 
 U-Net is a convolutional neural network (CNN) that was developed for image segmentation. As shown in Figure 1, this network is modified to have symmetrical down sampling and up sampling layers in a U-shaped architecture. Notice that there are skip connections (gray arrows) between those two sides to provide more context from the input.
 
@@ -52,7 +51,7 @@ https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/
 
 ---
 
-## Dataset
+## 3. Case Study - MoS₂ image dataset
 
 The **MoS₂ image dataset** (28 raw STEM images) was provided by **Professor Juan C. Idrobo** as part of the MSE544 Y2025 hackathon challenge. The segmentation task is binary: **defect (void)** vs **background**.
 
@@ -71,7 +70,7 @@ The **MoS₂ image dataset** (28 raw STEM images) was provided by **Professor Ju
 
 ---
 
-## Workflow
+## 4. Workflow of a simple segmentation task using U-Net
 
 1. **Manual labeling** of raw MoS₂ images with [LabelMe](https://labelme.io/docs/install-labelme-terminal#install-uv-and-python) (free version includes `sam2` AI assist).
 2. **Upload** the dataset and notebook to [Google Colab](https://colab.research.google.com/); select a **free Nvidia T4 GPU**.
@@ -101,23 +100,11 @@ The **MoS₂ image dataset** (28 raw STEM images) was provided by **Professor Ju
 
 ---
 
-## Getting Started
-
-```bash
-# 1. Clone the repo
-git clone <this-repo-url>
-cd 544-Lexar-2026Apr9-Unet-v0.7
-
-# 2. Open the student notebook in Google Colab
-#    Runtime -> Change runtime type -> T4 GPU -> Save
-
-# 3. Upload image_data.zip (or the dataset folders) to the Colab session
-#    and run the notebook top-to-bottom.
-```
+## 5. Expected initial outcome
 
 ---
 
-## Assignment & Grading (100 pts)
+## 6. Assignment & Grading (100 pts)
 
 ### Questions & Answering — 8 × 10 pts = **80 pts**
 
@@ -159,4 +146,3 @@ Apply your improvement plan from Q8 (modify code, label more images, tune hyperp
 ## Acknowledgements
 
 - **Professor Juan C. Idrobo** — MoS₂ dataset (MSE544 Y2025 hackathon)
-- **Max Fu** — TA, teaching materials, and notebook
