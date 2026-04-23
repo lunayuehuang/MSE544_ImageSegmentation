@@ -2,13 +2,7 @@
 
 A hands-on tutorial for **MSE544 (Spring 2026)** that walks students through a complete image-segmentation workflow using **U-Net**, applied to a real materials-science dataset of **MoS₂** scanning transmission electron microscopy (STEM) images. The goal is to identify and mask out **defects (voids)** in the material.
 
-**Instructor / TA:** Max Fu, Luna Huang, Andrew Scott
-
-<p align="center">
-  <img src="github_images/prediction_example.png" alt="U-Net predicted defect mask on an unlabeled MoS2 test image" width="720"/>
-  <br/>
-  <em>U-Net predicted defect mask on an unlabeled MoS₂ test image.</em>
-</p>
+**Instructors:** Max Fu, Luna Huang, Andrew Scott
 
 ---
 
@@ -16,24 +10,44 @@ A hands-on tutorial for **MSE544 (Spring 2026)** that walks students through a c
 
 - What is image segmentation?
 - What is the U-Net architecture?
-- What is the typical workflow of image segmentation with a simple case study in materials science from scratch? (defect segmentation)
+- What is the typical workflow of image segmentation with a simple case study in materials science from scratch? (Case study: defect segmentation)
+- How to build a U-net model in python, and what are the key hyperparameters?
 - How to improve image segmentation results — both numerically (IoU) and visually (mask quality)?
 
 ---
 
 ## Repository Contents
 
-| Path | Description |
-| --- | --- |
+| Path                                                                | Description                                                    |
+| ------------------------------------------------------------------- | -------------------------------------------------------------- |
 | [L123-UNet-student-copy-v0.7.ipynb](L123-UNet-student-copy-v0.7.ipynb) | Student notebook — contains 8 questions + improvement section |
-| [L123-UNet-instructor-copy-v0.7.ipynb](L123-UNet-instructor-copy-v0.7.ipynb) | Instructor reference solution |
-| [teaching-plan.pdf](teaching-plan.pdf) | Full teaching plan and assignment brief |
-| [mos2/](mos2/) | Training images + labels (some labels intentionally removed) |
-| [mos2_additional_training_labels/](mos2_additional_training_labels/) | Extra training labels students can add back |
-| [mos2_val_images_labeled/](mos2_val_images_labeled/) | Fixed validation set (3 labeled images) |
-| [mos2_test_images_unlabeled/](mos2_test_images_unlabeled/) | Unlabeled test images (14 images) |
-| [image_data.zip](image_data.zip) | Zipped dataset for quick upload to Colab |
-| [build_student_nb.py](build_student_nb.py) | Script used to build the student notebook from the instructor copy |
+| [mos2/](mos2/)                                                         | Training images + labels (some labels removed)                 |
+| [mos2_additional_training_labels/](mos2_additional_training_labels/)   | Extra training labels students can add back to /mos2/          |
+| [mos2_val_images_labeled/](mos2_val_images_labeled/)                   | Fixed validation set (3 labeled images)                        |
+| [mos2_test_images_unlabeled/](mos2_test_images_unlabeled/)             | Unlabeled test images (14 images)                              |
+| [image_data.zip](image_data.zip)                                       | Zipped dataset for quick upload to Colab                       |
+
+---
+
+## Introduction of Image Segmentation
+
+In digital image processing and computer vision, image segmentation is the process of partitioning a digital image into multiple image segments, also know as image regions or image objects (sets of pixels). The goal of segmentation is to simplify and/or change the representation of an image into something that is more meaningful and easier to analyze…
+https://en.wikipedia.org/wiki/Image_segmentation
+
+---
+
+## U-Net architecture and workflow
+
+U-Net is a convolutional neural network (CNN) that was developed for image segmentation. As shown in Figure 1, this network is modified to have symmetrical down sampling and up sampling layers in a U-shaped architecture. Notice that there are skip connections (gray arrows) between those two sides to provide more context from the input.
+
+Ronneberger, O., Fischer, P., & Brox, T. (2015). U-net: Convolutional networks for biomedical image segmentation. International Conference on Medical image computing and computer-assisted intervention.
+https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/
+
+<p align="center">
+  <img src="github_images/U-Net-architecture-and-workflow.png"  width="600"/>
+  <br/>
+  <em>Figure 1. U-Net architecture and workflow.</em>
+</p>
 
 ---
 
@@ -44,15 +58,15 @@ The **MoS₂ image dataset** (28 raw STEM images) was provided by **Professor Ju
 <p align="center">
   <img src="github_images/sample_mos2.png" alt="Sample raw MoS2 STEM image" width="360"/>
   <br/>
-  <em>A sample raw MoS₂ STEM image — dark regions are the defects (voids) we want to segment.</em>
+  <em>Figure 2. A sample raw MoS₂ STEM image — dark regions are the defects (voids) we want to segment.</em>
 </p>
 
-| Split | Folder | Count |
-| --- | --- | --- |
-| Training | `./mos2` | 10 images (some labels removed) |
-| Extra training labels | `./mos2_additional_training_labels` | 2 additional `.json` labels |
-| Validation (fixed) | `./mos2_val_images_labeled` | 3 labeled images |
-| Test (unlabeled) | `./mos2_test_images_unlabeled` | 14 images |
+| Split                 | Folder                                | Count                           |
+| --------------------- | ------------------------------------- | ------------------------------- |
+| Training              | `./mos2`                            | 10 images (some labels removed) |
+| Extra training labels | `./mos2_additional_training_labels` | 2 additional `.json` labels   |
+| Validation (fixed)    | `./mos2_val_images_labeled`         | 3 labeled images                |
+| Test (unlabeled)      | `./mos2_test_images_unlabeled`      | 14 images                       |
 
 ---
 
@@ -129,16 +143,15 @@ Apply your improvement plan from Q8 (modify code, label more images, tune hyperp
 ## Optional TA Demos *(not required for students)*
 
 - **LabelMe AI labeling** with `sam2` (Segment Anything Model 2, Meta).
-- **YOLOv11-based AI labeling assistant** — cuts manual labeling time roughly in half.
 
 ---
 
 ## References
 
-- Ronneberger, O., Fischer, P., & Brox, T. (2015). *U-Net: Convolutional Networks for Biomedical Image Segmentation*. MICCAI. <https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/>
+- Ronneberger, O., Fischer, P., & Brox, T. (2015). *U-Net: Convolutional Networks for Biomedical Image Segmentation*. MICCAI. [https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/](https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/)
 - Wikipedia — [Image segmentation](https://en.wikipedia.org/wiki/Image_segmentation)
 - Towards Data Science — [Intersection over Union (IoU)](https://towardsdatascience.com/intersection-over-union-iou-calculation-for-evaluating-an-image-segmentation-model-8b22e2e84686/)
-- LabelMe — <https://labelme.io/docs/install-labelme-terminal#install-uv-and-python>
+- LabelMe — [https://labelme.io/docs/install-labelme-terminal#install-uv-and-python](https://labelme.io/docs/install-labelme-terminal#install-uv-and-python)
 
 ---
 
