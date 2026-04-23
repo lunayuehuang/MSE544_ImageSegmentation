@@ -89,13 +89,13 @@ The **MoS₂ image dataset** (28 raw STEM images) was provided by **Professor Ju
 <p align="center">
   <img src="github_images/val_patch_example.png" alt="Validation patch: image, ground truth, U-Net prediction" width="720"/>
   <br/>
-  <em>Validation patch — raw image, ground-truth mask, and U-Net prediction side-by-side.</em>
+  <em>Validation patch — raw image, ground-truth mask, and U-Net prediction side-by-side</em>
 </p>
 
 <p align="center">
   <img src="github_images/training_history.png" alt="Training history: loss, defect IoU, and learning rate" width="900"/>
   <br/>
-  <em>Baseline training history — train/val loss, defect IoU, and learning-rate schedule.</em>
+  <em>Baseline training history — train/val loss, defect IoU, and learning-rate schedule</em>
 </p>
 
 ---
@@ -105,7 +105,7 @@ The **MoS₂ image dataset** (28 raw STEM images) was provided by **Professor Ju
 <p align="center">
   <img src="github_images/prediction_on_unlabeled_test_image.png" width="900"/>
   <br/>
-  <em>prediction_on_unlabeled_test_image.png.</em>
+  <em>prediction_on_unlabeled_test_image</em>
 </p>
 
 ---
