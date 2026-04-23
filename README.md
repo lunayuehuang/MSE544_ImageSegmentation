@@ -138,7 +138,7 @@ The **MoS₂ image dataset** (28 raw STEM images) was provided by **Professor Ju
   Source: https://towardsdatascience.com/intersection-over-union-iou-calculation-for-evaluating-an-image-segmentation-model-8b22e2e84686/
 </p>
 
-    - Visualize training curves and predictions (validation + unlabeled test images)
+   - Visualize training curves and predictions (validation + unlabeled test images)
 
 <p align="center">
   <img src="github_images/val_patch_example.png" alt="Validation patch: image, ground truth, U-Net prediction" width="720"/>
@@ -190,7 +190,7 @@ Apply your improvement plan from Q8 (modify code, label more images, tune hyperp
 
 ## Optional TA Demos *(not required for students)*
 
-- **LabelMe AI labeling** with `sam2` (Segment Anything Model 2, Meta).
+- **LabelMe AI labeling** with `sam2` (Segment Anything Model 2 from Meta).
 
 ---
 
