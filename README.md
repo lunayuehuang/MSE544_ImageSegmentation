@@ -21,10 +21,10 @@ A hands-on tutorial for **MSE544 (Spring 2026)** that walks students through a c
 | Path                                                                | Description                                                    |
 | ------------------------------------------------------------------- | -------------------------------------------------------------- |
 | [L123-UNet-student-copy-v0.7.ipynb](L123-UNet-student-copy-v0.7.ipynb) | Student notebook — contains 8 questions + improvement section |
-| [mos2/](mos2/)                                                         | Training images + labels (some labels removed)                 |
-| [mos2_additional_training_labels/](mos2_additional_training_labels/)   | Extra training labels students can add back to /mos2/          |
-| [mos2_val_images_labeled/](mos2_val_images_labeled/)                   | Fixed validation set (3 labeled images)                        |
-| [mos2_test_images_unlabeled/](mos2_test_images_unlabeled/)             | Unlabeled test images (14 images)                              |
+| mos2/                                                         | Training images + labels (some labels removed)                 |
+| mos2_additional_training_labels/   | Extra training labels students can add back to "mos2/"          |
+| mos2_val_images_labeled/                   | Fixed validation set (3 labeled images)                        |
+| mos2_test_images_unlabeled/             | Unlabeled test images (14 images)                              |
 | [image_data.zip](image_data.zip)                                       | Zipped dataset for quick upload to Colab                       |
 
 ---
@@ -44,9 +44,9 @@ Ronneberger, O., Fischer, P., & Brox, T. (2015). U-net: Convolutional networks f
 https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/
 
 <p align="center">
-  <img src="github_images/U-Net-architecture-and-workflow.png"  width="600"/>
+  <img src="github_images/U-Net-architecture-and-workflow.png"  width="800"/>
   <br/>
-  <em>Figure 1. U-Net architecture and workflow.</em>
+  <em>Figure 1. U-Net architecture and workflow</em>
 </p>
 
 ---
