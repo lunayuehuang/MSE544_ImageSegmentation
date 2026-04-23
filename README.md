@@ -32,6 +32,7 @@ A hands-on tutorial for **MSE544 (Spring 2026)** that walks students through a c
 ## 1. Introduction of Image Segmentation
 
 In digital image processing and computer vision, image segmentation is the process of partitioning a digital image into multiple image segments, also know as image regions or image objects (sets of pixels). The goal of segmentation is to simplify and/or change the representation of an image into something that is more meaningful and easier to analyze.
+Source:
 https://en.wikipedia.org/wiki/Image_segmentation
 
 ---
@@ -41,6 +42,7 @@ https://en.wikipedia.org/wiki/Image_segmentation
 U-Net is a convolutional neural network (CNN) that was developed for image segmentation. As shown in Figure 1, this network is modified to have symmetrical down sampling and up sampling layers in a U-shaped architecture. Notice that there are skip connections (gray arrows) between those two sides to provide more context from the input.
 
 Ronneberger, O., Fischer, P., & Brox, T. (2015). U-net: Convolutional networks for biomedical image segmentation. International Conference on Medical image computing and computer-assisted intervention.
+Source:
 https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/
 
 <p align="center">
@@ -72,13 +74,13 @@ The **MoS₂ image dataset** (28 raw STEM images) was provided by **Professor Ju
 
 ## 4. Workflow of a simple segmentation task using U-Net
 
-1. **Manual labeling** of raw MoS₂ images with [LabelMe](https://labelme.io/docs/install-labelme-terminal#install-uv-and-python) (free version includes `sam2` AI assist).
+1). **Manual labeling** of raw MoS₂ images with [LabelMe](https://labelme.io/docs/install-labelme-terminal#install-uv-and-python) (free version includes `sam2` AI assist).
 
 <p align="center">
   <img src="github_images/labeling-with-labelme.png" alt="Labeling with LabelMe" width="720"/>
 </p>
 
-2. **Upload** the dataset and notebook to [Google Colab](https://colab.research.google.com/); select a **free Nvidia T4 GPU**.
+2). **Upload** the dataset and notebook to [Google Colab](https://colab.research.google.com/); select a **free Nvidia T4 GPU**.
 
 *(a) Open/Upload the Jupyter notebook first*
 
@@ -104,7 +106,7 @@ The **MoS₂ image dataset** (28 raw STEM images) was provided by **Professor Ju
   <img src="github_images/google-colab-4.png" alt="Google Colab step 4" width="720"/>
 </p>
 
-3. **Preprocessing**
+3). **Preprocessing**
 
    - **Train / validation split**
      - There are 10 images in the training image folder `./mos2`, but some labels are removed. However, 2 more training labels are provided in the folder `./mos2_additional_training_labels`. You can try to add them back to `./mos2` and see if that improves the U-Net training.
@@ -121,7 +123,7 @@ The **MoS₂ image dataset** (28 raw STEM images) was provided by **Professor Ju
 </p>
 
 
-4. **U-Net training & validation**
+4). **U-Net training & validation**
 
    - Load training patches and masks
    - Define U-Net architecture and hyperparameters
@@ -136,12 +138,12 @@ The **MoS₂ image dataset** (28 raw STEM images) was provided by **Professor Ju
   Source: https://towardsdatascience.com/intersection-over-union-iou-calculation-for-evaluating-an-image-segmentation-model-8b22e2e84686/
 </p>
 
-   - Visualize training curves and predictions (validation + unlabeled test images)
+    - Visualize training curves and predictions (validation + unlabeled test images)
 
 <p align="center">
   <img src="github_images/val_patch_example.png" alt="Validation patch: image, ground truth, U-Net prediction" width="720"/>
   <br/>
-  <em>Validation patch — raw image, ground-truth mask, and U-Net prediction side-by-side</em>
+  <em>Validation patch — raw image, ground-truth mask, and U-Net prediction</em>
 </p>
 
 <p align="center">
@@ -157,7 +159,7 @@ The **MoS₂ image dataset** (28 raw STEM images) was provided by **Professor Ju
 <p align="center">
   <img src="github_images/prediction_on_unlabeled_test_image.png" width="900"/>
   <br/>
-  <em>prediction_on_unlabeled_test_image</em>
+  <em>Prediction on unlabeled test image</em>
 </p>
 
 ---
