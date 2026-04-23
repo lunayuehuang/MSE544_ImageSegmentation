@@ -1,4 +1,4 @@
-# MSE544 Computer Vision — Image Segmentation with U-Net
+# MSE544 Image Segmentation with U-Net
 
 A hands-on tutorial for **MSE544 (Spring 2026)** that walks students through a complete image-segmentation workflow using **U-Net**, applied to a real materials-science dataset of **MoS₂** scanning transmission electron microscopy (STEM) images. The goal is to identify and mask out **defects (voids)** in the material.
 
