@@ -100,7 +100,13 @@ The **MoS₂ image dataset** (28 raw STEM images) was provided by **Professor Ju
 
 ---
 
-## 5. Expected initial outcome
+## 5. Prediction on unlabeled test image
+
+<p align="center">
+  <img src="github_images/prediction_on_unlabeled_test_image.png" width="900"/>
+  <br/>
+  <em>prediction_on_unlabeled_test_image.png.</em>
+</p>
 
 ---
 
