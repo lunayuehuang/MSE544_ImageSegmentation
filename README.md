@@ -168,7 +168,7 @@ The **MoS₂ image dataset** (28 raw STEM images) was provided by **Professor Ju
 
 ### Questions & Answering — 8 × 10 pts = **80 pts**
 
-1. Why do we need **train-test-split** before U-Net training?
+1. Why do we need **train-validation-split** before U-Net training?
 2. Why crop original images into **smaller patches**?
 3. Why is **image augmentation** needed, and what other methods could be used?
 4. How do we address the **class imbalance** (background ≫ defect)?
@@ -183,7 +183,7 @@ Apply your improvement plan from Q8 (modify code, label more images, tune hyperp
 
 ### Submission
 
-- Upload your updated `.ipynb` with every question answered (80%).
+- Upload your updated `.ipynb` with every question answered in the Jupyter notebook markdown cells(80%).
 - U-Net performance improved with new results shown in the notebook (20%).
 
 ---
