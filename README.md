@@ -18,14 +18,14 @@ A hands-on tutorial for **MSE544 (Spring 2026)** that walks students through a c
 
 ## Repository Contents
 
-| Path                                                                | Description                                                     |
-| ------------------------------------------------------------------- | --------------------------------------------------------------- |
-| [L123-UNet-student-copy-v0.7.ipynb](L123-UNet-student-copy-v0.7.ipynb) | Student notebook — contains 8 questions + improvement section  |
-| [image_data.zip](image_data.zip)                                       | Zipped dataset for quick upload to Google Colab                 |
-| mos2/                                                               | 10 Training images + 5 labels (the other 5 labels were removed) |
-| mos2_additional_training_labels/                                    | Extra training labels you can add back to "mos2/"               |
-| mos2_val_images_labeled/                                            | Fixed validation set (3 labeled images)                         |
-| mos2_test_images_unlabeled/                                         | Unlabeled test images (14 images)                               |
+| Path                                                                | Description                                                    |
+| ------------------------------------------------------------------- | -------------------------------------------------------------- |
+| [L123-UNet-student-copy-v0.7.ipynb](L123-UNet-student-copy-v0.7.ipynb) | Student notebook — contains 8 questions + improvement section |
+| [image_data.zip](image_data.zip)                                       | Zipped dataset for quick upload to Google Colab                |
+| mos2/                                                               | 10 Training images + 5 labels (the other 5 labels were removed)                 |
+| mos2_additional_training_labels/                                    | Extra training labels you can add back to "mos2/"              |
+| mos2_val_images_labeled/                                            | Fixed validation set (3 labeled images)                        |
+| mos2_test_images_unlabeled/                                         | Unlabeled test images (14 images)                              |
 
 ---
 
@@ -108,13 +108,13 @@ The **MoS₂ image dataset** (28 raw STEM images) was provided by **Professor Ju
 
 3). **Preprocessing**
 
-- **Train / validation split**
-  - There are 10 images in the training image folder `./mos2`, but some labels are removed. However, 2 more training labels are provided in the folder `./mos2_additional_training_labels`. You can try to add them back to `./mos2` and see if that improves the U-Net training.
-  - There are 3 images in the validation image folder `./mos2_val_images_labeled`.
-  - There are 10+ more images in `./mos2_test_images_unlabeled`.
-- Crop raw images into smaller patches
-- Convert labels: `.json` → `.png` segmentation masks
-- Data augmentation (flip, rotation, …) — training patches only
+   - **Train / validation split**
+     - There are 10 images in the training image folder `./mos2`, but some labels are removed. However, 2 more training labels are provided in the folder `./mos2_additional_training_labels`. You can try to add them back to `./mos2` and see if that improves the U-Net training.
+     - There are 3 images in the validation image folder `./mos2_val_images_labeled`.
+     - There are 10+ more images in `./mos2_test_images_unlabeled`.
+   - Crop raw images into smaller patches
+   - Convert labels: `.json` → `.png` segmentation masks
+   - Data augmentation (flip, rotation, …) — training patches only
 
 <p align="center">
   <img src="github_images/training_image_patch_label.png" alt="Training image patch and corresponding label" width="720"/>
@@ -122,12 +122,13 @@ The **MoS₂ image dataset** (28 raw STEM images) was provided by **Professor Ju
   <em>Training image (small patch) and Mask (hand label)</em>
 </p>
 
+
 4). **U-Net training & validation**
 
-- Load training patches and masks
-- Define U-Net architecture and hyperparameters
-- Define the loss function (CrossEntropy, Dice, …)
-- Evaluate with **IoU** (Intersection-over-Union)
+   - Load training patches and masks
+   - Define U-Net architecture and hyperparameters
+   - Define the loss function (CrossEntropy, Dice, …)
+   - Evaluate with **IoU** (Intersection-over-Union)
 
 <p align="center">
   <img src="github_images/IOU.jpg" alt="Intersection-over-Union (IoU) metric" width="480"/>
@@ -137,7 +138,7 @@ The **MoS₂ image dataset** (28 raw STEM images) was provided by **Professor Ju
   Source: https://towardsdatascience.com/intersection-over-union-iou-calculation-for-evaluating-an-image-segmentation-model-8b22e2e84686/
 </p>
 
-- Visualize training curves and predictions (validation + unlabeled test images)
+   - Visualize training curves and predictions (validation + unlabeled test images)
 
 <p align="center">
   <img src="github_images/val_patch_example.png" alt="Validation patch: image, ground truth, U-Net prediction" width="720"/>
