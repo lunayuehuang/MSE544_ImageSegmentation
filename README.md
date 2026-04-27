@@ -1,6 +1,7 @@
 # MSE544 Computer Vision — Image Segmentation using U-Net
 
 **Authors: Huilong (Max) Fu, Luna Huang**
+
 **Date:** April 27, 2026
 
 This is a tutorial prepared for the University of Washington **MSE 544 — Computer Vision in Materials Science** class. In this tutorial, students will learn the fundamentals of image segmentation and the U-Net architecture; how to build a complete defect-segmentation pipeline from raw STEM images of MoS₂ — including labeling with LabelMe, dataset preparation, U-Net training on a free Nvidia T4 GPU on Google Colab, and inference on unlabeled test images; and how to iteratively improve segmentation performance through augmentation, loss design, hyperparameter tuning, and additional labeling. 
