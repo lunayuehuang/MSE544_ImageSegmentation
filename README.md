@@ -2,9 +2,9 @@
 
 **Authors: Huilong (Max) Fu, Luna Huang**
 
-**Date:** April 27, 2026
+**Date:** Spring 2026
 
-This is a tutorial prepared for the University of Washington **MSE 544 — Computer Vision in Materials Science** class. In this tutorial, students will learn the fundamentals of image segmentation and the U-Net architecture; how to build a complete defect-segmentation pipeline from raw STEM images of MoS₂ — including labeling with LabelMe, dataset preparation, U-Net training on a free Nvidia T4 GPU on Google Colab, and inference on unlabeled test images; and how to iteratively improve segmentation performance through augmentation, loss design, hyperparameter tuning, and additional labeling. 
+This is a tutorial prepared for the University of Washington **MSE 544 — Computer Vision in Materials Science** class. In this tutorial, students will learn the fundamentals of image segmentation and the U-Net architecture; how to build a complete defect-segmentation pipeline from raw STEM images of MoS₂ — including labeling with LabelMe, dataset preparation, U-Net training on a free Nvidia T4 GPU on Google Colab, and inference on unlabeled test images; and how to iteratively improve segmentation performance through augmentation, loss design, hyperparameter tuning, and additional labeling.
 
 ## Table of Contents
 
@@ -47,7 +47,6 @@ This is a tutorial prepared for the University of Washington **MSE 544 — Compu
   - [Step D. Prediction helpers](#step-d-prediction-helpers)
   - [Step E. Run predictions on unlabeled images #2–12](#step-e-run-predictions-on-unlabeled-images-212)
 - [Questions &amp; Answering](#questions--answering-8--10-pts--80-pts)
-- [Appendix — Optional TA Demos](#appendix--optional-ta-demos-not-required-for-students)
 - [Disclaimer](#disclaimer)
 
 ## Learning Objectives
