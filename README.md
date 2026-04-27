@@ -1,10 +1,53 @@
 # MSE544 Computer Vision — Image Segmentation using U-Net
 
-**Instructors: Huilong (Max) Fu, Luna Huang**
+**Authors: Huilong (Max) Fu, Luna Huang**
 **Date:** April 27, 2026
 
-This notebook combines dataset preparation, U-Net training, and inference into a single end-to-end workflow for **MoS₂ defect segmentation**.
+This is a tutorial prepared for the University of Washington **MSE 544 — Computer Vision in Materials Science** class. In this tutorial, students will learn the fundamentals of image segmentation and the U-Net architecture; how to build a complete defect-segmentation pipeline from raw STEM images of MoS₂ — including labeling with LabelMe, dataset preparation, U-Net training on a free Nvidia T4 GPU on Google Colab, and inference on unlabeled test images; and how to iteratively improve segmentation performance through augmentation, loss design, hyperparameter tuning, and additional labeling. 
 
+## Table of Contents
+
+- [Learning Objectives](#learning-objectives)
+- [Background](#background)
+  - [1. Image Segmentation](#1-image-segmentation)
+  - [2. U-Net Architecture](#2-u-net-architecture)
+  - [3. Case Study — MoS₂ Image Dataset](#3-case-study--mos-image-dataset)
+  - [4. Dataset Folder Layout](#4-dataset-folder-layout)
+  - [5. Workflow Overview](#5-workflow-overview)
+- [Setup](#setup)
+  - [Step A. Optional cleanup (skip on first run)](#step-a-optional-cleanup-skip-on-first-run)
+  - [Step B. Optional unzip (run once)](#step-b-optional-unzip-run-once)
+  - [Step C. Check PyTorch and GPU](#step-c-check-pytorch-and-gpu)
+- [Part 1 — Dataset Preparation](#part-1--dataset-preparation)
+  - [Step A. Settings](#step-a-settings)
+  - [Step B. Output folder structure](#step-b-output-folder-structure)
+  - [Step C. Mask helper from LabelMe JSON](#step-c-mask-helper-from-labelme-json)
+  - [Step D. Augmentation helpers](#step-d-augmentation-helpers)
+  - [Step E. Collect image/json pairs](#step-e-collect-imagejson-pairs)
+  - [Step F. Train / val split](#step-f-train--val-split)
+  - [Step G. Patch extraction + dataset generation](#step-g-patch-extraction--dataset-generation)
+  - [Step H. Sanity-check visualisation](#step-h-sanity-check-visualisation)
+  - [Step I. Class balance stats](#step-i-class-balance-stats)
+- [Part 2 — U-Net Training](#part-2--u-net-training-binary-defect-segmentation)
+  - [Step A. Print labeled MoS2 image IDs](#step-a-print-labeled-mos2-image-ids)
+  - [Step B. (Optional) Install dependencies](#step-b-optional-install-dependencies)
+  - [Step C. MoS2Dataset (`Dataset` + `DataLoader`)](#step-c-mos2dataset-dataset--dataloader)
+  - [Step D. UNet model](#step-d-unet-model)
+  - [Step E. Class weights and loss (Focal CE + optional focal Tversky)](#step-e-class-weights-and-loss-focal-ce--optional-focal-tversky)
+  - [Step F. Pick device](#step-f-pick-device)
+  - [Step G. Training loop](#step-g-training-loop)
+  - [Step H. Plot training curves (training history)](#step-h-plot-training-curves-training-history)
+  - [Step I. Visualise val predictions](#step-i-visualise-val-predictions)
+  - [Step J. Per-class IoU on validation set](#step-j-per-class-iou-on-validation-set)
+- [Part 3 — U-Net Prediction on Unlabeled Test Images](#part-3--u-net-prediction-on-unlabeled-test-images)
+  - [Step A. Imports + paths](#step-a-imports--paths)
+  - [Step B. Re-define UNet (standalone for inference)](#step-b-re-define-unet-standalone-for-inference)
+  - [Step C. Load weights](#step-c-load-weights)
+  - [Step D. Prediction helpers](#step-d-prediction-helpers)
+  - [Step E. Run predictions on unlabeled images #2–12](#step-e-run-predictions-on-unlabeled-images-212)
+- [Questions &amp; Answering](#questions--answering-8--10-pts--80-pts)
+- [Appendix — Optional TA Demos](#appendix--optional-ta-demos-not-required-for-students)
+- [Disclaimer](#disclaimer)
 
 ## Learning Objectives
 
@@ -67,30 +110,13 @@ For an IoU primer, see: [https://towardsdatascience.com/intersection-over-union-
 
 ---
 
-## Grading breakdown (100 pts total)
+## Setup
 
-| Component                                                                               | Points        |
-| --------------------------------------------------------------------------------------- | ------------- |
-| Q1 Train/Val Split                                                                      | 10            |
-| Q2 Patch Extraction                                                                     | 10            |
-| Q3 Augmentation                                                                         | 10            |
-| Q4 Class Imbalance                                                                      | 10            |
-| Q5 U-Net Architecture                                                                   | 10            |
-| Q6 Loss Function                                                                        | 10            |
-| Q7 Training Dynamics                                                                    | 10            |
-| Q8 Evaluation and Improvement Plan                                                      | 10            |
-| Optimised model (defect IoU improvement + cleaner predictions on unlabeled test images) | 20            |
-| **Total**                                                                         | **100** |
+Before you start, run the three setup cells below to clean up any previous outputs, unzip the image dataset, and confirm that PyTorch can see your GPU. You will only need to run Step A and Step B once per session — Step C is worth re-running any time you reconnect to a Colab runtime to make sure a GPU is still attached.
 
-> **Tip:** After answering all questions, apply your improvement plan and re-run. The 20 optimisation points are awarded based on how much your final val defect IoU exceeds the baseline, and on prediction quality on the unlabeled test images.
+### Step A. Optional cleanup (skip on first run)
 
----
-
-## Setup utility cells
-
-### Cell 1 — Optional cleanup (skip on first run)
-
-Wipes any previous `mos2*` outputs under `/content/`. Leave commented unless you really want a fresh start — on a local machine this would delete files permanently.
+Open your notebook and run the cell below to wipe any previous `mos2*` outputs under `/content/`. Leave it commented unless you really want a fresh start — on a local machine this would delete files permanently.
 
 ```python
 #!rm -rf /content/mos2*  
@@ -99,9 +125,9 @@ Wipes any previous `mos2*` outputs under `/content/`. Leave commented unless you
 ## Be careful with this command when running on your local machine! It will delete files permanently.
 ```
 
-### Cell 2 — Optional unzip (run once)
+### Step B. Optional unzip (run once)
 
-Extracts the bundled `image_data.zip` into `/content/` so the dataset folders (`mos2`, `mos2_val_images_labeled`, `mos2_test_images_unlabeled`, …) appear at the expected paths. Uncomment for the first run only.
+Run this cell to extract the bundled `image_data.zip` into `/content/` so the dataset folders (`mos2`, `mos2_val_images_labeled`, `mos2_test_images_unlabeled`, …) appear at the expected paths. Uncomment the line on the very first run, then comment it back out for subsequent runs.
 
 ```python
 #!unzip image_data.zip -d /content/  
@@ -109,9 +135,9 @@ Extracts the bundled `image_data.zip` into `/content/` so the dataset folders (`
 ## enbale this command only for the first time to unzip the data.
 ```
 
-### Cell 3 — Check PyTorch and GPU
+### Step C. Check PyTorch and GPU
 
-Confirms PyTorch is installed and that an Nvidia GPU is attached. If `Is CUDA available: False`, go back to **Runtime → Change runtime type → T4 GPU** in Colab before continuing.
+Run this cell to confirm that PyTorch is installed and that an Nvidia GPU is attached. The output should print your PyTorch version, `Is CUDA available: True`, and the GPU device name (e.g. `Tesla T4`). If you see `Is CUDA available: False`, go back to **Runtime → Change runtime type → T4 GPU** in Colab and reconnect before continuing.
 
 ```python
 # Check PyTorch installation and GPU availability on Google Colab
@@ -127,9 +153,9 @@ if torch.cuda.is_available():
 
 # Part 1 — Dataset Preparation
 
-Converts LabelMe polygon annotations into U-Net binary integer masks (PNG).
+In Part 1, you will turn the raw MoS₂ images and their LabelMe polygon annotations into the binary integer masks (`background = 0`, `defect = 1`) that the U-Net will train on. You will also crop each original image into 256 × 256 patches, apply augmentation to the training patches only, and write the final dataset out to `mos2_dataset/`. By the end of this part, you should have a clean train/val split with sanity-checked masks and a clear sense of how imbalanced the defect class is.
 
-### Cell 4 — Settings
+### Step A. Settings
 
 Central configuration for the dataset-prep stage: input/output folder paths, the patch size (`PATCH=256`), whether to drop empty patches, and the `label → class index` map. **Change `PATCH` here if you want to experiment with different patch sizes** (e.g. 128 or 384) — the rest of Part 1 will follow.
 
@@ -163,7 +189,7 @@ print(f'  PATCH={PATCH}, REMOVE_EMPTY={REMOVE_EMPTY}')
 print(f'  NUM_CLASSES={NUM_CLASSES} (including background)')
 ```
 
-### Cell 5 — Output folder structure
+### Step B. Output folder structure
 
 Recreates a clean `mos2_dataset/` tree with `images/{train,val}` and `masks/{train,val}` subfolders. Any previous output is removed so each run starts from a known-empty state.
 
@@ -186,7 +212,7 @@ for k, v in paths.items():
     print(f'  {v}')
 ```
 
-### Cell 6 — Mask helper from LabelMe JSON
+### Step C. Mask helper from LabelMe JSON
 
 Defines `load_multiclass_mask`, which rasterises the polygon shapes from a LabelMe `.json` into an integer mask array (0 = background, 1 = defect) the same size as the original image. This is how `.json` annotations become `.png` masks the network can train on.
 
@@ -218,7 +244,7 @@ def load_multiclass_mask(json_path, image_size):
 print('Helpers defined.')
 ```
 
-### Cell 7 — Augmentation helpers
+### Step D. Augmentation helpers
 
 Declares the augmentation tag list (`AUG_TAGS`) and a single `augment_array` function that applies the same flip/rotation to image and mask in lock-step. **Baseline ships with only `orig` + `fliplr`** — adding the commented `flipud`, `rot90`, `rot180`, `rot270` tags multiplies the training set ~3× and is one of the easiest places to lift defect IoU (see Q3).
 
@@ -243,7 +269,7 @@ def augment_array(arr, tag):
 print('Augmentation helpers defined.')
 ```
 
-### Cell 8 — Collect image/json pairs
+### Step E. Collect image/json pairs
 
 Scans the `mos2/` and `mos2_val_images_labeled/` folders and lists every image stem that has a matching `.json` label file. Useful as a quick sanity check that your labeling work has actually landed in the right folder.
 
@@ -269,7 +295,7 @@ print(f'Train labeled images ({len(train_pairs)}): {train_pairs}')
 print(f'Val labeled images   ({len(val_pairs)}): {val_pairs}')
 ```
 
-### Cell 9 — Train / val split
+### Step F. Train / val split
 
 Locks in the train/val split — the validation IDs come from a fixed folder so that everyone in the class is judged on the **same 3 validation images**. This is what makes the `val_target_iou` metric comparable across submissions.
 
@@ -285,7 +311,7 @@ print(f'Val:   {len(val_ids)} images')
 print(f'Val IDs: {sorted(val_ids)}')
 ```
 
-### Cell 10 — Patch extraction + dataset generation
+### Step G. Patch extraction + dataset generation
 
 The main preprocessing routine. For every labeled image it (a) tiles into non-overlapping `PATCH × PATCH` patches, (b) drops empty patches when `REMOVE_EMPTY=True`, (c) applies augmentation tags **to training patches only**, and (d) writes the image and integer mask side-by-side into `mos2_dataset/`. Validation patches are **never** augmented so the eval metric stays honest.
 
@@ -382,7 +408,7 @@ print(f'  Train patches: {n_train}  (skipped {skip_train} empty)')
 print(f'  Val patches:   {n_val}    (skipped {skip_val} empty)')
 ```
 
-### Cell 11 — Sanity-check visualisation
+### Step H. Sanity-check visualisation
 
 Loads the first training patch that contains a defect and overlays its mask in **yellow** on the grayscale image. If the yellow blob doesn't visually align with the dark void in the patch, your label-to-mask conversion is broken — fix it before training.
 
@@ -432,7 +458,7 @@ plt.tight_layout()
 plt.show()
 ```
 
-### Cell 12 — Class balance stats
+### Step I. Class balance stats
 
 Counts pixels per class across the training set and prints the percentages. You should see **background ≫ defect** (often >95% vs <5%); that imbalance directly motivates the class weighting and weighted sampler used later (Q4).
 
@@ -461,13 +487,9 @@ for cls in range(NUM_CLASSES):
 
 # Part 2 — U-Net Training (Binary Defect Segmentation)
 
-Trains a custom U-Net on the MoS₂ defect dataset.
+In Part 2, you will define the U-Net architecture, configure the loss and optimiser, and train the network on the patches you generated in Part 1. The model has two output classes (`background`, `defect`); the loss is **Focal Cross-Entropy** with an optional **focal Tversky** term, and the best checkpoint is selected by **defect IoU** on the fixed validation set. By the end of this part, you should have a saved `unet_best.pt` checkpoint, a training-history plot, and side-by-side validation visualisations to compare your predictions against the ground-truth masks.
 
-- **2 output classes**: background, defect
-- **Loss**: Focal CrossEntropy (+ optional focal Tversky)
-- **Validation selection**: defect-focused IoU
-
-### Cell 13 — Print labeled MoS2 image IDs
+### Step A. Print labeled MoS2 image IDs
 
 Prints the IDs of every image in `./mos2/` that has a paired `.json` annotation. Use this list to confirm which raw images are actually contributing to training, and which still need labeling (or could be brought in from `mos2_additional_training_labels`).
 
@@ -509,7 +531,7 @@ if missing_images:
     print(f'JSON files without matching image: {missing_images}')
 ```
 
-### Cell 14 — (Optional) Install dependencies
+### Step B. (Optional) Install dependencies
 
 Optional `pip install` line for environments where PyTorch isn't already available. Colab comes with these pre-installed, so you can usually leave this commented out.
 
@@ -517,9 +539,7 @@ Optional `pip install` line for environments where PyTorch isn't already availab
 #!pip install torch torchvision tqdm scikit-learn
 ```
 
-## 2.1 Dataset + DataLoader
-
-### Cell 15 — MoS2Dataset
+### Step C. MoS2Dataset (`Dataset` + `DataLoader`)
 
 Custom PyTorch `Dataset` that loads each grayscale patch + integer mask, remaps any legacy mask values down to `{0, 1}`, and pre-computes a per-sample weight. Patches that contain a defect get a `+3.0` weight so the `WeightedRandomSampler` later draws them more often — a key trick to fight class imbalance at the **batch** level (not just the loss level).
 
@@ -574,9 +594,7 @@ class MoS2Dataset(Dataset):
         return img, mask, name
 ```
 
-## 2.2 U-Net Architecture
-
-### Cell 16 — UNet model
+### Step D. UNet model
 
 Defines the U-Net architecture: a `DoubleConv` block (Conv → GroupNorm → ReLU, twice, with optional dropout), a 4-level encoder/decoder with channel widths `32 → 64 → 128 → 256 → 512`, and **skip connections** that concatenate matching encoder features into each decoder block. The final `1×1` conv emits per-class logits at full resolution. See Q5 for why skip connections are crucial for pixel-wise tasks.
 
@@ -645,9 +663,7 @@ class UNet(nn.Module):
         return self.out(x)   # (B, num_classes, H, W) logits
 ```
 
-## 2.3 Loss Function (CrossEntropy + Binary Defect Dice)
-
-### Cell 17 — Class weights and loss
+### Step E. Class weights and loss (Focal CE + optional focal Tversky)
 
 Computes inverse-frequency class weights from the training masks (boosting the rare `defect` class) and defines two losses: **focal cross-entropy** (the active baseline) and **focal Tversky** (commented out). The `total_loss` wrapper currently returns CE only — uncomment the combined `CE + 0.45 * Tversky` line to better penalise false negatives, which is one of the recommended improvements for Q6/Q8.
 
@@ -730,9 +746,7 @@ for c, name in enumerate(CLASS_NAMES):
     print(f'  {c} {name:<12} {CLASS_WEIGHTS[c].item():.2f}')
 ```
 
-## 2.4 Training the U-Net
-
-### Cell 18 — Pick device
+### Step F. Pick device
 
 Picks the best available compute device in priority order: Apple **MPS** → Nvidia **CUDA** → **CPU**. On Colab with a T4 selected this should print `cuda`.
 
@@ -747,7 +761,7 @@ else:
 print('Using device:', device)
 ```
 
-### Cell 19 — Training loop
+### Step G. Training loop
 
 The main training cell. Sets the hyperparameters (`BATCH_SIZE`, `EPOCHS=10` baseline, `LR=1e-4`, `WEIGHT_DECAY=3e-4`), builds a **weighted-sampler DataLoader** for training, and runs an epoch loop with AdamW, gradient clipping, and `ReduceLROnPlateau`. Each epoch tracks train/val loss and defect IoU; the **best-IoU checkpoint** is saved to `unet_best.pt`, with early stopping after 3 stagnant epochs. **Bumping `EPOCHS` to 20–30** is the simplest knob for Q7.
 
@@ -865,9 +879,7 @@ print(f'\nTraining complete. Best val defect IoU: {best_val_target_iou:.4f}')
 print('Model saved to unet_best.pt')
 ```
 
-## 2.4b Training History
-
-### Cell 20 — Plot training curves
+### Step H. Plot training curves (training history)
 
 Plots three side-by-side panels — **Train vs Val loss**, **Defect IoU**, and the **LR schedule** — and marks the best epoch with a dashed vertical line. Use this to spot under-training (curves still trending), over-fitting (val curve diverging from train), or LR-schedule problems.
 
@@ -912,9 +924,7 @@ plt.show()
 print(f'Best val defect IoU: {max(history["val_target_iou"]):.4f} at epoch {best_epoch}')
 ```
 
-## 2.5 Visualise Predictions
-
-### Cell 21 — Visualise val predictions
+### Step I. Visualise val predictions
 
 Loads the best checkpoint and produces 3-panel figures (**original patch / ground truth / U-Net prediction**) for every validation patch, saving them under `unet_visualizations/val/`. This is your main qualitative diagnostic — look for missed small defects, false positives in clean lattice regions, and noisy mask boundaries.
 
@@ -977,7 +987,7 @@ model.load_state_dict(torch.load('unet_best.pt', map_location=device))
 visualize_unet(model, val_loader, device, show=True)
 ```
 
-### Cell 22 — Per-class IoU on validation set
+### Step J. Per-class IoU on validation set
 
 Computes the per-class IoU on the full validation set and prints the headline **mean defect IoU** — this is the number the 20 improvement points are graded against. Anything substantially above the baseline counts as progress.
 
@@ -1016,10 +1026,9 @@ print(f'  Mean IoU (defect): {iou[list(TARGET_CLASS_IDS)].mean():.4f}')
 
 # Part 3 — U-Net Prediction on Unlabeled Test Images
 
-- Load the best U-Net weights from Part 2 and predict binary defect masks for unlabeled source images `2.png` through `12.png`.
-- Each output plot places the original image on the left and the predicted defect mask on the right.
+In Part 3, you will load the best U-Net weights saved in Part 2 (`unet_best.pt`) and run inference on the unlabeled test images (`2.png` through `12.png`) in `mos2_test_images_unlabeled/`. For each image, the notebook saves and displays a two-panel figure — the **original image on the left** and the **predicted defect mask on the right** — and writes the bare predicted mask to disk as a separate PNG. These qualitative results, together with your validation IoU from Part 2, are what graders use to judge the improvement portion of your submission.
 
-### Cell 23 — Imports + paths
+### Step A. Imports + paths
 
 Sets up Part 3: imports, the test image source folder (`mos2_test_images_unlabeled`), the list of test image IDs (`2`–`12`), the saved-weights path (`unet_best.pt`), and a fresh save directory for the inference visualisations.
 
@@ -1057,11 +1066,9 @@ print('Using device:', device)
 print('Saving plots to:', SAVE_DIR)
 ```
 
-## 3.1 Model
+### Step B. Re-define UNet (standalone for inference)
 
-This is the same binary U-Net architecture used in Part 2, so the saved `unet_best.pt` weights load into the matching layers.
-
-### Cell 24 — Re-define UNet (standalone for inference)
+This is the same binary U-Net architecture used in Part 2, repeated here so the saved `unet_best.pt` weights load into matching layers without depending on the training cells.
 
 Re-declares the same `DoubleConv` and `UNet` classes from Cell 16 so that **Part 3 can be run standalone** (e.g. on a fresh kernel) without re-running the training cells. The architecture must match exactly so the saved weights load cleanly.
 
@@ -1129,9 +1136,7 @@ class UNet(nn.Module):
         return self.out(x)
 ```
 
-## 3.2 Load Best Weights
-
-### Cell 25 — Load weights
+### Step C. Load weights
 
 Loads the best checkpoint from Part 2 (`unet_best.pt`) into the inference model and switches it to `.eval()` mode. If you see a `FileNotFoundError`, you haven't trained the model yet — run Part 2 first.
 
@@ -1150,11 +1155,9 @@ model.eval()
 print(f'Loaded model weights from {MODEL_PATH}')
 ```
 
-## 3.3 Prediction Helpers
+### Step D. Prediction helpers
 
-The U-Net downsamples four times, so we pad each image to a multiple of 16 before prediction, then crop the mask back to the original size.
-
-### Cell 26 — Helpers
+The U-Net downsamples four times, so each input image must be padded to a multiple of 16 before prediction; after inference, the mask is cropped back to the original size.
 
 Helpers for **full-image** inference (no patching at test time): `decode_predictions` applies the per-class confidence threshold, `pad_to_multiple` reflect-pads the input to a multiple of 16 (since the U-Net halves resolution 4 times), and `predict_image` runs the model and crops the mask back to the original size. `mask_to_rgb` colourises the mask for plotting.
 
@@ -1213,11 +1216,9 @@ def find_image_path(image_id, source_dir=SOURCE_DIR):
     raise FileNotFoundError(f'Could not find image {image_id} in {source_dir}')
 ```
 
-## 3.4 Predict unlabeled images #2–12
+### Step E. Run predictions on unlabeled images #2–12
 
 Run this cell to display and save the two-panel plots. The predicted mask image is also saved separately as `*_pred_mask.png`.
-
-### Cell 27 — Run predictions
 
 Iterates over the unlabeled test images (`2.png` … `12.png`), runs U-Net inference on each, saves the predicted mask as a standalone PNG, and shows a 2-panel figure (**Original vs Predicted defect mask**). The printed `defect pixels` count makes it easy to spot images where the model is mis-firing (zero pixels on a clearly defective image, or millions of pixels on a clean one).
 
@@ -1319,7 +1320,7 @@ Apply your improvement plan from Q8 (modify code, label more images, tune hyperp
 
 (The End)
 
-### Cell 28 — Finish timestamp
+### Finish timestamp
 
 Stamps the notebook with the wall-clock finish time so graders can confirm the notebook was actually re-executed top-to-bottom on submission.
 
@@ -1331,8 +1332,15 @@ print("Finish time:", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
 ---
 
-## Appendix — Optional TA Demos *(not required for students)*
+## References
 
-- **LabelMe AI mask with `sam2`** (Segment Anything Model 2 from Meta) — speeds up hand-labeling by generating proposal masks that you then refine.
-  [https://labelme.io/docs/install-labelme-terminal#install-uv-and-python](https://labelme.io/docs/install-labelme-terminal#install-uv-and-python)
-- **AI labeling assistant built with YOLOv11** — a custom detector retrained on your hand-labels feeds back proposed defect regions into LabelMe, **cutting labeling time by roughly half** in TA Max Fu's prototype workflow (real-time YOLO detection ↔ hand labeling ↔ ~1-hour YOLO re-training loop).
+- Ronneberger, O., Fischer, P., & Brox, T. (2015). *U-Net: Convolutional Networks for Biomedical Image Segmentation*. MICCAI. [https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/](https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/)
+- Wikipedia — [Image segmentation](https://en.wikipedia.org/wiki/Image_segmentation)
+- Towards Data Science — [Intersection over Union (IoU)](https://towardsdatascience.com/intersection-over-union-iou-calculation-for-evaluating-an-image-segmentation-model-8b22e2e84686/)
+- LabelMe — [https://labelme.io/docs/install-labelme-terminal#install-uv-and-python](https://labelme.io/docs/install-labelme-terminal#install-uv-and-python)
+
+---
+
+## Disclaimer
+
+The code in this repository (the notebook cells, helper functions, and accompanying README descriptions) was generated with the assistance of **ChatGPT (OpenAI)** and **Claude Code (Anthropic)**, working from pre-defined instructions and prompts written by the instructors. All AI-generated content has been reviewed, tested, and adapted by the instructors for use in this class. Students are expected to read, understand, and modify the code to answer the assignment questions and improve model performance.
