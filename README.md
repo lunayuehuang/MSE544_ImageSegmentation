@@ -1,4 +1,4 @@
-# eMSE544 Computer Vision — Image Segmentation using U-Net
+# MSE544 Computer Vision — Image Segmentation using U-Net
 
 **Authors: Huilong (Max) Fu, Luna Huang**
 
