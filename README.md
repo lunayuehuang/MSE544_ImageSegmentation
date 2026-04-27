@@ -1,8 +1,8 @@
-# MSE544 Computer Vision — Image Segmentation using U-Net
+# eMSE544 Computer Vision — Image Segmentation using U-Net
 
 **Authors: Huilong (Max) Fu, Luna Huang**
 
-**Date:** Spring 2026
+**Date: Spring 2026**
 
 This is a tutorial prepared for the University of Washington **MSE 544 — Computer Vision in Materials Science** class. In this tutorial, students will learn the fundamentals of image segmentation and the U-Net architecture; how to build a complete defect-segmentation pipeline from raw STEM images of MoS₂ — including labeling with LabelMe, dataset preparation, U-Net training on a free Nvidia T4 GPU on Google Colab, and inference on unlabeled test images; and how to iteratively improve segmentation performance through augmentation, loss design, hyperparameter tuning, and additional labeling.
 
@@ -594,7 +594,7 @@ class MoS2Dataset(Dataset):
         return img, mask, name
 ```
 
-### Step D. UNet model
+### Step D. U-Net model
 
 Defines the U-Net architecture: a `DoubleConv` block (Conv → GroupNorm → ReLU, twice, with optional dropout), a 4-level encoder/decoder with channel widths `32 → 64 → 128 → 256 → 512`, and **skip connections** that concatenate matching encoder features into each decoder block. The final `1×1` conv emits per-class logits at full resolution. See Q5 for why skip connections are crucial for pixel-wise tasks.
 
@@ -1066,7 +1066,7 @@ print('Using device:', device)
 print('Saving plots to:', SAVE_DIR)
 ```
 
-### Step B. Re-define UNet (standalone for inference)
+### Step B. Re-define U-Net (standalone for inference)
 
 This is the same binary U-Net architecture used in Part 2, repeated here so the saved `unet_best.pt` weights load into matching layers without depending on the training cells.
 
@@ -1319,16 +1319,6 @@ Apply your improvement plan from Q8 (modify code, label more images, tune hyperp
 - U-Net performance improved with new results shown in the notebook (20%).
 
 (The End)
-
-### Finish timestamp
-
-Stamps the notebook with the wall-clock finish time so graders can confirm the notebook was actually re-executed top-to-bottom on submission.
-
-```python
-from datetime import datetime
-
-print("Finish time:", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-```
 
 ---
 
