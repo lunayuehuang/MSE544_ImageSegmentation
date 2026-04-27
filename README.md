@@ -5,9 +5,6 @@
 
 This notebook combines dataset preparation, U-Net training, and inference into a single end-to-end workflow for **MoS₂ defect segmentation**.
 
-Each section below corresponds to one cell in `L123-UNet-student-copy-v0.7.ipynb`. Copy each block into a new cell (in order) to recreate the entire notebook.
-
----
 
 ## Learning Objectives
 
@@ -93,6 +90,8 @@ For an IoU primer, see: [https://towardsdatascience.com/intersection-over-union-
 
 ### Cell 1 — Optional cleanup (skip on first run)
 
+Wipes any previous `mos2*` outputs under `/content/`. Leave commented unless you really want a fresh start — on a local machine this would delete files permanently.
+
 ```python
 #!rm -rf /content/mos2*  
 
@@ -102,6 +101,8 @@ For an IoU primer, see: [https://towardsdatascience.com/intersection-over-union-
 
 ### Cell 2 — Optional unzip (run once)
 
+Extracts the bundled `image_data.zip` into `/content/` so the dataset folders (`mos2`, `mos2_val_images_labeled`, `mos2_test_images_unlabeled`, …) appear at the expected paths. Uncomment for the first run only.
+
 ```python
 #!unzip image_data.zip -d /content/  
 
@@ -109,6 +110,8 @@ For an IoU primer, see: [https://towardsdatascience.com/intersection-over-union-
 ```
 
 ### Cell 3 — Check PyTorch and GPU
+
+Confirms PyTorch is installed and that an Nvidia GPU is attached. If `Is CUDA available: False`, go back to **Runtime → Change runtime type → T4 GPU** in Colab before continuing.
 
 ```python
 # Check PyTorch installation and GPU availability on Google Colab
@@ -127,6 +130,8 @@ if torch.cuda.is_available():
 Converts LabelMe polygon annotations into U-Net binary integer masks (PNG).
 
 ### Cell 4 — Settings
+
+Central configuration for the dataset-prep stage: input/output folder paths, the patch size (`PATCH=256`), whether to drop empty patches, and the `label → class index` map. **Change `PATCH` here if you want to experiment with different patch sizes** (e.g. 128 or 384) — the rest of Part 1 will follow.
 
 ```python
 import os, json, shutil
@@ -160,6 +165,8 @@ print(f'  NUM_CLASSES={NUM_CLASSES} (including background)')
 
 ### Cell 5 — Output folder structure
 
+Recreates a clean `mos2_dataset/` tree with `images/{train,val}` and `masks/{train,val}` subfolders. Any previous output is removed so each run starts from a known-empty state.
+
 ```python
 # ============================================================
 # Output folder structure
@@ -180,6 +187,8 @@ for k, v in paths.items():
 ```
 
 ### Cell 6 — Mask helper from LabelMe JSON
+
+Defines `load_multiclass_mask`, which rasterises the polygon shapes from a LabelMe `.json` into an integer mask array (0 = background, 1 = defect) the same size as the original image. This is how `.json` annotations become `.png` masks the network can train on.
 
 ```python
 # ============================================================
@@ -211,6 +220,8 @@ print('Helpers defined.')
 
 ### Cell 7 — Augmentation helpers
 
+Declares the augmentation tag list (`AUG_TAGS`) and a single `augment_array` function that applies the same flip/rotation to image and mask in lock-step. **Baseline ships with only `orig` + `fliplr`** — adding the commented `flipud`, `rot90`, `rot180`, `rot270` tags multiplies the training set ~3× and is one of the easiest places to lift defect IoU (see Q3).
+
 ```python
 # ============================================================
 # Augmentation helpers
@@ -233,6 +244,8 @@ print('Augmentation helpers defined.')
 ```
 
 ### Cell 8 — Collect image/json pairs
+
+Scans the `mos2/` and `mos2_val_images_labeled/` folders and lists every image stem that has a matching `.json` label file. Useful as a quick sanity check that your labeling work has actually landed in the right folder.
 
 ```python
 # ============================================================
@@ -258,6 +271,8 @@ print(f'Val labeled images   ({len(val_pairs)}): {val_pairs}')
 
 ### Cell 9 — Train / val split
 
+Locks in the train/val split — the validation IDs come from a fixed folder so that everyone in the class is judged on the **same 3 validation images**. This is what makes the `val_target_iou` metric comparable across submissions.
+
 ```python
 # ============================================================
 # Train / val split (pre-defined by folder structure)
@@ -271,6 +286,8 @@ print(f'Val IDs: {sorted(val_ids)}')
 ```
 
 ### Cell 10 — Patch extraction + dataset generation
+
+The main preprocessing routine. For every labeled image it (a) tiles into non-overlapping `PATCH × PATCH` patches, (b) drops empty patches when `REMOVE_EMPTY=True`, (c) applies augmentation tags **to training patches only**, and (d) writes the image and integer mask side-by-side into `mos2_dataset/`. Validation patches are **never** augmented so the eval metric stays honest.
 
 ```python
 # ============================================================
@@ -367,6 +384,8 @@ print(f'  Val patches:   {n_val}    (skipped {skip_val} empty)')
 
 ### Cell 11 — Sanity-check visualisation
 
+Loads the first training patch that contains a defect and overlays its mask in **yellow** on the grayscale image. If the yellow blob doesn't visually align with the dark void in the patch, your label-to-mask conversion is broken — fix it before training.
+
 ```python
 # ============================================================
 # Quick sanity-check visualisation
@@ -415,6 +434,8 @@ plt.show()
 
 ### Cell 12 — Class balance stats
 
+Counts pixels per class across the training set and prints the percentages. You should see **background ≫ defect** (often >95% vs <5%); that imbalance directly motivates the class weighting and weighted sampler used later (Q4).
+
 ```python
 # ============================================================
 # Class balance stats
@@ -447,6 +468,8 @@ Trains a custom U-Net on the MoS₂ defect dataset.
 - **Validation selection**: defect-focused IoU
 
 ### Cell 13 — Print labeled MoS2 image IDs
+
+Prints the IDs of every image in `./mos2/` that has a paired `.json` annotation. Use this list to confirm which raw images are actually contributing to training, and which still need labeling (or could be brought in from `mos2_additional_training_labels`).
 
 ```python
 # Print which source images have LabelMe JSON annotations
@@ -488,6 +511,8 @@ if missing_images:
 
 ### Cell 14 — (Optional) Install dependencies
 
+Optional `pip install` line for environments where PyTorch isn't already available. Colab comes with these pre-installed, so you can usually leave this commented out.
+
 ```python
 #!pip install torch torchvision tqdm scikit-learn
 ```
@@ -495,6 +520,8 @@ if missing_images:
 ## 2.1 Dataset + DataLoader
 
 ### Cell 15 — MoS2Dataset
+
+Custom PyTorch `Dataset` that loads each grayscale patch + integer mask, remaps any legacy mask values down to `{0, 1}`, and pre-computes a per-sample weight. Patches that contain a defect get a `+3.0` weight so the `WeightedRandomSampler` later draws them more often — a key trick to fight class imbalance at the **batch** level (not just the loss level).
 
 ```python
 import os
@@ -550,6 +577,8 @@ class MoS2Dataset(Dataset):
 ## 2.2 U-Net Architecture
 
 ### Cell 16 — UNet model
+
+Defines the U-Net architecture: a `DoubleConv` block (Conv → GroupNorm → ReLU, twice, with optional dropout), a 4-level encoder/decoder with channel widths `32 → 64 → 128 → 256 → 512`, and **skip connections** that concatenate matching encoder features into each decoder block. The final `1×1` conv emits per-class logits at full resolution. See Q5 for why skip connections are crucial for pixel-wise tasks.
 
 ```python
 import torch.nn as nn
@@ -619,6 +648,8 @@ class UNet(nn.Module):
 ## 2.3 Loss Function (CrossEntropy + Binary Defect Dice)
 
 ### Cell 17 — Class weights and loss
+
+Computes inverse-frequency class weights from the training masks (boosting the rare `defect` class) and defines two losses: **focal cross-entropy** (the active baseline) and **focal Tversky** (commented out). The `total_loss` wrapper currently returns CE only — uncomment the combined `CE + 0.45 * Tversky` line to better penalise false negatives, which is one of the recommended improvements for Q6/Q8.
 
 ```python
 import torch.nn as nn
@@ -703,6 +734,8 @@ for c, name in enumerate(CLASS_NAMES):
 
 ### Cell 18 — Pick device
 
+Picks the best available compute device in priority order: Apple **MPS** → Nvidia **CUDA** → **CPU**. On Colab with a T4 selected this should print `cuda`.
+
 ```python
 if torch.backends.mps.is_available():
     device = torch.device('mps')
@@ -715,6 +748,8 @@ print('Using device:', device)
 ```
 
 ### Cell 19 — Training loop
+
+The main training cell. Sets the hyperparameters (`BATCH_SIZE`, `EPOCHS=10` baseline, `LR=1e-4`, `WEIGHT_DECAY=3e-4`), builds a **weighted-sampler DataLoader** for training, and runs an epoch loop with AdamW, gradient clipping, and `ReduceLROnPlateau`. Each epoch tracks train/val loss and defect IoU; the **best-IoU checkpoint** is saved to `unet_best.pt`, with early stopping after 3 stagnant epochs. **Bumping `EPOCHS` to 20–30** is the simplest knob for Q7.
 
 ```python
 from tqdm import tqdm
@@ -834,6 +869,8 @@ print('Model saved to unet_best.pt')
 
 ### Cell 20 — Plot training curves
 
+Plots three side-by-side panels — **Train vs Val loss**, **Defect IoU**, and the **LR schedule** — and marks the best epoch with a dashed vertical line. Use this to spot under-training (curves still trending), over-fitting (val curve diverging from train), or LR-schedule problems.
+
 ```python
 import matplotlib.pyplot as plt
 
@@ -878,6 +915,8 @@ print(f'Best val defect IoU: {max(history["val_target_iou"]):.4f} at epoch {best
 ## 2.5 Visualise Predictions
 
 ### Cell 21 — Visualise val predictions
+
+Loads the best checkpoint and produces 3-panel figures (**original patch / ground truth / U-Net prediction**) for every validation patch, saving them under `unet_visualizations/val/`. This is your main qualitative diagnostic — look for missed small defects, false positives in clean lattice regions, and noisy mask boundaries.
 
 ```python
 import matplotlib.pyplot as plt
@@ -940,6 +979,8 @@ visualize_unet(model, val_loader, device, show=True)
 
 ### Cell 22 — Per-class IoU on validation set
 
+Computes the per-class IoU on the full validation set and prints the headline **mean defect IoU** — this is the number the 20 improvement points are graded against. Anything substantially above the baseline counts as progress.
+
 ```python
 # ============================================================
 # Per-class IoU on validation set
@@ -980,6 +1021,8 @@ print(f'  Mean IoU (defect): {iou[list(TARGET_CLASS_IDS)].mean():.4f}')
 
 ### Cell 23 — Imports + paths
 
+Sets up Part 3: imports, the test image source folder (`mos2_test_images_unlabeled`), the list of test image IDs (`2`–`12`), the saved-weights path (`unet_best.pt`), and a fresh save directory for the inference visualisations.
+
 ```python
 import os
 from pathlib import Path
@@ -1019,6 +1062,8 @@ print('Saving plots to:', SAVE_DIR)
 This is the same binary U-Net architecture used in Part 2, so the saved `unet_best.pt` weights load into the matching layers.
 
 ### Cell 24 — Re-define UNet (standalone for inference)
+
+Re-declares the same `DoubleConv` and `UNet` classes from Cell 16 so that **Part 3 can be run standalone** (e.g. on a fresh kernel) without re-running the training cells. The architecture must match exactly so the saved weights load cleanly.
 
 ```python
 def make_group_norm(num_channels, max_groups=8):
@@ -1088,6 +1133,8 @@ class UNet(nn.Module):
 
 ### Cell 25 — Load weights
 
+Loads the best checkpoint from Part 2 (`unet_best.pt`) into the inference model and switches it to `.eval()` mode. If you see a `FileNotFoundError`, you haven't trained the model yet — run Part 2 first.
+
 ```python
 if not MODEL_PATH.exists():
     raise FileNotFoundError(f'Model weights not found: {MODEL_PATH}')
@@ -1108,6 +1155,8 @@ print(f'Loaded model weights from {MODEL_PATH}')
 The U-Net downsamples four times, so we pad each image to a multiple of 16 before prediction, then crop the mask back to the original size.
 
 ### Cell 26 — Helpers
+
+Helpers for **full-image** inference (no patching at test time): `decode_predictions` applies the per-class confidence threshold, `pad_to_multiple` reflect-pads the input to a multiple of 16 (since the U-Net halves resolution 4 times), and `predict_image` runs the model and crops the mask back to the original size. `mask_to_rgb` colourises the mask for plotting.
 
 ```python
 img_tf = T.ToTensor()
@@ -1169,6 +1218,8 @@ def find_image_path(image_id, source_dir=SOURCE_DIR):
 Run this cell to display and save the two-panel plots. The predicted mask image is also saved separately as `*_pred_mask.png`.
 
 ### Cell 27 — Run predictions
+
+Iterates over the unlabeled test images (`2.png` … `12.png`), runs U-Net inference on each, saves the predicted mask as a standalone PNG, and shows a 2-panel figure (**Original vs Predicted defect mask**). The printed `defect pixels` count makes it easy to spot images where the model is mis-firing (zero pixels on a clearly defective image, or millions of pixels on a clean one).
 
 ```python
 patches = [mpatches.Patch(color=np.array(PALETTE[1]) / 255, label='defect')]
@@ -1269,6 +1320,8 @@ Apply your improvement plan from Q8 (modify code, label more images, tune hyperp
 (The End)
 
 ### Cell 28 — Finish timestamp
+
+Stamps the notebook with the wall-clock finish time so graders can confirm the notebook was actually re-executed top-to-bottom on submission.
 
 ```python
 from datetime import datetime
