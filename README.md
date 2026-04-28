@@ -1,4 +1,4 @@
-# MSE544 Computer Vision — Image Segmentation using U-Net
+# +MSE544 Computer Vision — Image Segmentation using U-Net
 
 **Authors: Huilong (Max) Fu, Prof. Luna Huang, Andrew Scott**
 
@@ -173,11 +173,45 @@ The MoS₂ image dataset (28 raw images) was provided by **Professor Juan C. Idr
 A free labeling tool, **LabelMe**, is introduced for hand labeling, with optional AI assistance via `sam2` (Segment Anything Model 2):
 [https://labelme.io/docs/install-labelme-terminal#install-uv-and-python](https://labelme.io/docs/install-labelme-terminal#install-uv-and-python)
 
-### 4. Dataset Folder Layout
+For context, here is what individual MoS₂ point defects look like at higher magnification (the dark voids the U-Net needs to learn):
+
+![MoS₂ point defects](github_images/mos2-point-defects.png)
+
+A more advanced version of this segmentation task is to distinguish multiple defect types at once (mono-vacancy, di-vacancy, etc.) — useful as a stretch goal once the binary defect/background model is working:
+
+![MoS₂ defects with multi-class labels](github_images/mos2-defects-multi-label.png)
+
+Hong et al. (2015). Exploring atomic defects in molybdenum disulphide monolayers. Nature Communications, 6(1), 6293. https://doi.org/10.1038/ncomms7293
+
+**It is worth mentioning that multi-class segmentation and classification is very complicated in practice. Many companies or research groups still heavily rely on human experts to manually identify, classify and count the different defects.**
+
+An example of defect segmentation with **2 classes** (2 different types of defects) is provided below:
+
+![MoS₂ binary (2-class) segmentation example](github_images/mos2-segmentation-2-classes.png)
+
+**For the simplicity of this 101-level segmentation hands-on, we will only do segmentaion for the obvious voids with just 1 class label "defect".**
+
+An example is given below:
+
+![MoS₂ one-class defect segmentation example](github_images/mos2-defects-one-class.png)
+
+**Potential applications from this simple 1-class segmentation:**
+
+- Identify and measure the void content (percentage) for quality control purposes.
+
+- Deploy as a fast pre-screening tool to extract all the defects, and then do classfication and counting of different defect types.
+
+- Provide information to calculate electrical or thermal properties of this material (MoS2 monolayer).
+
+- Provide a simple educational tool and others.
+
+
+
+### 4. Dataset Folder Layout from image_data.zip
 
 | Folder                                | Contents                                                                                   |
 | ------------------------------------- | ------------------------------------------------------------------------------------------ |
-| `./mos2`                            | 10 training images. Some labels were intentionally removed.                                |
+| `./mos2`                            | 10 training images + 5 training labels (the other 5 labels were intentionally removed)     |
 | `./mos2_additional_training_labels` | 2 extra training labels — try adding them back to `./mos2` to see if training improves. |
 | `./mos2_val_images_labeled`         | 3 fixed validation images (used to evaluate your optimisation).                            |
 | `./mos2_test_images_unlabeled`      | 10+ unlabeled test images for final qualitative evaluation.                                |
@@ -364,7 +398,7 @@ Switch the runtime to a free Nvidia T4 GPU via `Runtime → Change runtime type 
 
 ![Select the T4 GPU runtime in Colab](github_images/colab-select-runtime-with-T4-GPU.png)
 
-Upload `image_data.zip` to the Colab session by opening the **Files** tab in the left sidebar and dragging the zip into `/content/` (or use the upload button).
+Upload `image_data.zip` to the Colab session by opening the **Files** tab in the left sidebar and dragging the zip into `/content/` (or use the **Upload** button).
 
 ![Upload the image dataset to Colab](github_images/colab-upload-image-dataset.png)
 
@@ -383,7 +417,7 @@ Open your notebook and run the cell below to wipe any previous `mos2*` outputs u
 
 ### Step B. Optional unzip (run once)
 
-Run this cell to extract the bundled `image_data.zip` into `/content/` so the dataset folders (`mos2`, `mos2_val_images_labeled`, `mos2_test_images_unlabeled`, …) appear at the expected paths. **Uncomment the line on the very first run, then comment it back out for subsequent runs.**
+Run this cell to extract the bundled `image_data.zip` into `/content/` so the dataset folders (`mos2`, `mos2_val_images_labeled`, `mos2_test_images_unlabeled`, …) appear at the expected paths. **Uncomment the line on the very first run, then comment it back out for subsequent runs of the entire notebook.** You may find this useful when you are trying to fine tune your models later on.
 
 ```python
 #!unzip image_data.zip -d /content/  
