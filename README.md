@@ -18,7 +18,7 @@ This is a tutorial prepared for the University of Washington **MSE 544 — Compu
 - [4. Dataset Folder Layout](#4-dataset-folder-layout)
 - [5. Workflow Overview](#5-workflow-overview)
 
-* [Install LabelMe (for hand labeling)](#install-labelme-for-hand-labeling)
+[Install LabelMe (for hand labeling)](#install-labelme-for-hand-labeling)
 
 - [Step A. Install uv](#step-a-install-uv)
 - [Step B. Install Python via uv](#step-b-install-python-via-uv)
