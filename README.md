@@ -78,8 +78,8 @@ You might have no idea about any of these comparisons at this moment, but soon y
 - [1. Image Segmentation](#1-image-segmentation)
 - [2. U-Net Architecture](#2-u-net-architecture)
 - [3. Case Study — MoS₂ Image Dataset](#3-case-study--mos-image-dataset)
-- [4. Dataset Folder Layout](#4-dataset-folder-layout)
-- [5. Workflow Overview](#5-workflow-overview)
+- [4. Dataset Folder Layout from image_data.zip](#4-dataset-folder-layout-from-image_datazip)
+- [5. Hands-on Workflow Overview](#5-hands-on-workflow-overview)
 
 [Install LabelMe (for hand labeling)](#install-labelme-for-hand-labeling)
 
@@ -91,7 +91,7 @@ You might have no idea about any of these comparisons at this moment, but soon y
 
 [Local Setup (if running on your own computer)](#local-setup-if-running-on-your-own-computer)
 
-- [Step A. Install Miniconda and create an environment](#step-a-install-miniconda-and-create-an-environment)
+- [Step A. Install Miniconda and create a new environment](#step-a-install-miniconda-and-create-a-new-environment)
 - [Step B. Install PyTorch and dependencies](#step-b-install-pytorch-and-dependencies)
 - [Step C. Create a new notebook in VS Code and follow the tutorial](#step-c-create-a-new-notebook-in-vs-code-and-follow-the-tutorial)
 
@@ -329,7 +329,7 @@ If you'd rather skip Colab and run the tutorial on your own machine — for exam
 
 > **Windows + Nvidia GPU** — open a terminal and run `nvidia-smi` to check your installed CUDA version (shown in the top-right of the table). Match the PyTorch wheel in **Step B** to that version (e.g. CUDA 12.6 → `whl/cu126`, CUDA 12.8 → `whl/cu128`). It is **often fine if your system CUDA is newer than the PyTorch CUDA build** — Nvidia drivers are backward-compatible, so a system showing CUDA 12.8 will happily run a `cu126` PyTorch wheel. Just don't go the other way (don't install a newer PyTorch CUDA than your driver supports).
 
-### Step A. Install Miniconda and create an new environment
+### Step A. Install Miniconda and create a new environment
 
 Install **Miniconda** from [docs.anaconda.com/miniconda](https://docs.anaconda.com/miniconda/) (pick the installer that matches your OS). After install, open a fresh terminal — **Anaconda Prompt** on Windows, or any terminal on macOS/Linux — and create a dedicated environment for this tutorial:
 
