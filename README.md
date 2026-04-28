@@ -160,7 +160,7 @@ uv python install
 
 This downloads a managed Python interpreter that LabelMe will use. You don't need a system-wide Python.
 
-### Step C. Install and launch LabelMe
+## Step C. Install and launch LabelMe
 
 ```bash
 uv tool install labelme
