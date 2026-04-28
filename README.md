@@ -6,13 +6,56 @@
 
 This is a tutorial prepared for the University of Washington **MSE 544 — Computer Vision in Materials Science** class. In this tutorial, students will learn the fundamentals of image segmentation and the U-Net architecture; how to build a complete defect-segmentation pipeline from raw STEM images of MoS₂ — including labeling with LabelMe, dataset preparation, U-Net training on a free Nvidia T4 GPU on Google Colab, and inference on unlabeled test images; and how to iteratively improve segmentation performance through augmentation, loss design, hyperparameter tuning, and additional labeling.
 
-**Before you start**, please download the **image_data.zip** from the Canvas page. After unzipping, your folder should look like this:
+**Before you start**, please download the **image_data.zip** from the Canvas page. After unzipping in a project folder, your folder content should look like this:
 
-![Dataset folder tree after unzipping image_data.zip](github_images/dataset-folder-tree.png)
+```text
+├── image_data.zip
+├── mos2
+│   ├── 14.png
+│   ├── 15.png
+│   ├── 17.png
+│   ├── 18.json
+│   ├── 18.png
+│   ├── 19.json
+│   ├── 19.png
+│   ├── 21.png
+│   ├── 22.png
+│   ├── 23.json
+│   ├── 23.png
+│   ├── 26.json
+│   ├── 26.png
+│   ├── 28.json
+│   └── 28.png
+├── mos2_additional_training_labels
+│   ├── 21.json
+│   └── 22.json
+├── mos2_test_images_unlabeled
+│   ├── 10.png
+│   ├── 11.png
+│   ├── 12.png
+│   ├── 16.png
+│   ├── 2.png
+│   ├── 20.png
+│   ├── 24.png
+│   ├── 3.png
+│   ├── 4.png
+│   ├── 5.png
+│   ├── 6.png
+│   ├── 7.png
+│   ├── 8.png
+│   └── 9.png
+└── mos2_val_images_labeled
+    ├── 13.json
+    ├── 13.png
+    ├── 25.json
+    ├── 25.png
+    ├── 27.json
+    └── 27.png
+```
 
 ## From Tabular Data to Image Data
 
-In week3 of this quarter, we introduced the Catboost for numerical regression and feature importance analysis using tabular data. This time, we are exploring how to use deep neural networks (e.g. U-Net) in image learning tasks.
+In week3 of this quarter, we introduced the CatBoost for numerical regression and feature importance analysis using tabular data. This time, we are exploring how to use deep neural networks (e.g. U-Net) in image learning tasks.
 
 Image data breaks the assumptions you're used to from tabular ML, and almost every design choice in this notebook (U-Net, Dice loss, class weights, augmentation) traces back to one of three differences:
 
