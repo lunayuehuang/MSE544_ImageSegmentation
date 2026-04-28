@@ -155,6 +155,12 @@ In digital image processing and computer vision, image segmentation is the proce
 
 Reference: [https://en.wikipedia.org/wiki/Image_segmentation](https://en.wikipedia.org/wiki/Image_segmentation)
 
+**Intersection over Union (IOU)** is known to be a good metric for measuring overlap between two bounding boxes or masks. If the prediction is completely correct, IoU =1. The lower the IoU, the worse the prediction results. An illustration of IOU concept is shown below:
+
+![Intersection over Union (IoU)](github_images/IOU-master.png)
+
+For an IoU primer, see: [https://towardsdatascience.com/intersection-over-union-iou-calculation-for-evaluating-an-image-segmentation-model-8b22e2e84686/](https://towardsdatascience.com/intersection-over-union-iou-calculation-for-evaluating-an-image-segmentation-model-8b22e2e84686/)
+
 ### 2. U-Net Architecture
 
 U-Net is a convolutional neural network (CNN) developed for image segmentation. It has symmetrical down-sampling (encoder) and up-sampling (decoder) layers in a U-shaped architecture, with **skip connections** between the two sides to preserve spatial context from the input. This makes it well-suited for pixel-wise segmentation, especially with limited training data.
@@ -218,8 +224,6 @@ An example is given below:
 3. **Image preprocessing**: train/val split, crop into smaller patches, convert LabelMe `.json` → `.png` masks, and apply augmentation (flip, rotation, …) to **training patches only**.
 4. **U-Net training & validation**: load patches, define the model and hyperparameters, choose a loss (CrossEntropy, Dice, …), and evaluate using **IoU (Intersection over Union)**. Visualise training history, validation predictions vs ground truth, and predictions on unlabeled test images.
 5. **Analyze** validation/test results, answer the 8 questions, then apply your improvement plan and re-run.
-
-For an IoU primer, see: [https://towardsdatascience.com/intersection-over-union-iou-calculation-for-evaluating-an-image-segmentation-model-8b22e2e84686/](https://towardsdatascience.com/intersection-over-union-iou-calculation-for-evaluating-an-image-segmentation-model-8b22e2e84686/)
 
 ---
 
