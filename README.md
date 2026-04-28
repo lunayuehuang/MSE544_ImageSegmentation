@@ -95,14 +95,14 @@ U-Net is a convolutional neural network (CNN) developed for image segmentation. 
 Reference: Ronneberger, O., Fischer, P., & Brox, T. (2015). *U-Net: Convolutional networks for biomedical image segmentation.* MICCAI.
 [https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/](https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/)
 
-**Typical workflow (6 steps):**
+**Typical workflow:**
 
-1. Image preprocessing (thresholding, cropping)
-2. Image annotation (defects only)
-3. Train-validation split (train ratio ≈ 80%)
-4. Data augmentation (training data only)
-5. U-Net training on GPU
-6. U-Net prediction vs. ground truth (validation data)
+    (1) Optional: Image preprocessing (thresholding, cropping)
+    (2) Image annotation (defects only)
+    (3) Train-validation split (train ratio ≈ 80%)
+    (4) Data augmentation (training data only)
+    (5) U-Net training on GPU
+    (6) U-Net prediction vs. ground truth (validation data)
 
 ### 3. Case Study — MoS₂ Image Dataset
 
