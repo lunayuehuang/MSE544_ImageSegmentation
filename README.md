@@ -1,4 +1,4 @@
-# +MSE544 Computer Vision — Image Segmentation using U-Net
+# MSE544 Computer Vision: Image Segmentation using U-Net
 
 **Authors: Huilong (Max) Fu, Prof. Luna Huang, Andrew Scott**
 
@@ -198,14 +198,9 @@ An example is given below:
 **Potential applications from this simple 1-class segmentation:**
 
 - Identify and measure the void content (percentage) for quality control purposes.
-
 - Deploy as a fast pre-screening tool to extract all the defects, and then do classfication and counting of different defect types.
-
 - Provide information to calculate electrical or thermal properties of this material (MoS2 monolayer).
-
 - Provide a simple educational tool and others.
-
-
 
 ### 4. Dataset Folder Layout from image_data.zip
 
