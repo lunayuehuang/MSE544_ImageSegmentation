@@ -555,10 +555,10 @@ AUG_TAGS = ['orig', 'fliplr', 'flipud', 'rot90', 'rot180', 'rot270']
 
 def augment_array(arr, tag):
     if tag == 'fliplr':  return np.fliplr(arr)
-    if tag == 'flipud':  return np.flipud(arr)
-    if tag == 'rot90':   return np.rot90(arr, 1)
-    if tag == 'rot180':  return np.rot90(arr, 2)
-    if tag == 'rot270':  return np.rot90(arr, 3)
+    #if tag == 'flipud':  return np.flipud(arr)
+    #if tag == 'rot90':   return np.rot90(arr, 1)
+    #if tag == 'rot180':  return np.rot90(arr, 2)
+    #if tag == 'rot270':  return np.rot90(arr, 3)
     return arr  # 'orig'
 
 
@@ -1099,7 +1099,7 @@ The main training cell. Sets the hyperparameters (`BATCH_SIZE`, `EPOCHS=10` base
 from tqdm import tqdm
 
 BATCH_SIZE = 2 
-EPOCHS = 5   # you may try 10, 20, 30 epochs for a better trained model
+EPOCHS = 1   # you may try 10, 20, 30 epochs for a better trained model
 LR = 1e-4
 WEIGHT_DECAY = 3e-4
 EARLY_STOPPING_PATIENCE = 3
