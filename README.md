@@ -4,7 +4,7 @@
 
 **Date: Spring 2026**
 
-This is a tutorial prepared for the University of Washington **MSE 544 — Computer Vision in Materials Science** class. In this tutorial, students will learn the fundamentals of image segmentation and the U-Net architecture; how to build a complete defect-segmentation pipeline from raw STEM images of MoS₂ — including labeling with LabelMe, dataset preparation, U-Net training on a free Nvidia T4 GPU on Google Colab, and inference on unlabeled test images; and how to iteratively improve segmentation performance through augmentation, loss design, hyperparameter tuning, and additional labeling.
+This is a tutorial prepared for the University of Washington **MSE 544 — Computer Vision in Materials Science** class. In this tutorial, students will learn the fundamentals of image segmentation and the U-Net architecture; how to build a complete defect-segmentation pipeline from raw STEM images of MoS₂ — including labeling with LabelMe, dataset preparation, U-Net training on a free Nvidia T4 GPU on Google Colab, and inference on unlabeled test images; and how to iteratively improve segmentation performance through augmentation, loss design, hyperparameter tuning, and additional labeling (= adding more training data).
 
 **Before you start**, please download the **image_data.zip** from the Canvas page. After unzipping in a project folder, your folder content should look like this:
 
@@ -1070,7 +1070,7 @@ The main training cell. Sets the hyperparameters (`BATCH_SIZE`, `EPOCHS=10` base
 from tqdm import tqdm
 
 BATCH_SIZE = 2 
-EPOCHS = 10   # Baseline: 10 epochs -- TODO: increase to 20-30 for a fully trained model
+EPOCHS = 5   # you may try 10, 20, 30 epochs for a better trained model
 LR = 1e-4
 WEIGHT_DECAY = 3e-4
 EARLY_STOPPING_PATIENCE = 3
