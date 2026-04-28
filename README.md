@@ -100,7 +100,7 @@ Reference: Ronneberger, O., Fischer, P., & Brox, T. (2015). *U-Net: Convolutiona
 
 The MoS₂ image dataset (28 raw images) was provided by **Professor Juan C. Idrobo** as part of the Y2025 hackathon challenge for this same class. The simple segmentation task in this assignment is to **identify and mask out all the defects (voids, shown as black regions in the raw images)**.
 
-<img src="github_images/sample_mos2.png" alt="Sample MoS₂ STEM image with defects (voids)" width="600">
+<img src="github_images/sample_mos2.png" alt="Sample MoS₂ STEM image with defects (voids)" width="400">
 
 A free labeling tool, **LabelMe**, is introduced for hand labeling, with optional AI assistance via `sam2` (Segment Anything Model 2):
 [https://labelme.io/docs/install-labelme-terminal#install-uv-and-python](https://labelme.io/docs/install-labelme-terminal#install-uv-and-python)
