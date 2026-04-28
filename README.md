@@ -1,6 +1,6 @@
 # MSE544 Computer Vision — Image Segmentation using U-Net
 
-**Authors: Huilong (Max) Fu, Luna Huang**
+**Authors: Huilong (Max) Fu, Prof. Luna Huang, Andrew Scott**
 
 **Date: Spring 2026**
 
@@ -8,46 +8,66 @@ This is a tutorial prepared for the University of Washington **MSE 544 — Compu
 
 ## Table of Contents
 
-- [Learning Objectives](#learning-objectives)
-- [Background](#background)
-  - [1. Image Segmentation](#1-image-segmentation)
-  - [2. U-Net Architecture](#2-u-net-architecture)
-  - [3. Case Study — MoS₂ Image Dataset](#3-case-study--mos-image-dataset)
-  - [4. Dataset Folder Layout](#4-dataset-folder-layout)
-  - [5. Workflow Overview](#5-workflow-overview)
-- [Setup of Google Colab](#setup-of-google-colab)
-  - [Step A. Optional cleanup (skip on first run)](#step-a-optional-cleanup-skip-on-first-run)
-  - [Step B. Optional unzip (run once)](#step-b-optional-unzip-run-once)
-  - [Step C. Check PyTorch and GPU](#step-c-check-pytorch-and-gpu)
-- [Part 1 — Dataset Preparation](#part-1--dataset-preparation)
-  - [Step A. Settings](#step-a-settings)
-  - [Step B. Output folder structure](#step-b-output-folder-structure)
-  - [Step C. Mask helper from LabelMe JSON](#step-c-mask-helper-from-labelme-json)
-  - [Step D. Augmentation helpers](#step-d-augmentation-helpers)
-  - [Step E. Collect image/json pairs](#step-e-collect-imagejson-pairs)
-  - [Step F. Train / val split](#step-f-train--val-split)
-  - [Step G. Patch extraction + dataset generation](#step-g-patch-extraction--dataset-generation)
-  - [Step H. Sanity-check visualisation](#step-h-sanity-check-visualisation)
-  - [Step I. Class balance stats](#step-i-class-balance-stats)
-- [Part 2 — U-Net Training](#part-2--u-net-training-binary-defect-segmentation)
-  - [Step A. Print labeled MoS2 image IDs](#step-a-print-labeled-mos2-image-ids)
-  - [Step B. (Optional) Install dependencies](#step-b-optional-install-dependencies)
-  - [Step C. MoS2 Dataset (`Dataset` + `DataLoader`)](#step-c-mos2-dataset-dataset--dataloader)
-  - [Step D. Create the U-Net model](#step-d-create-the-u-net-model)
-  - [Step E. Class weights and loss (Focal CE + optional focal Tversky)](#step-e-class-weights-and-loss-focal-ce--optional-focal-tversky)
-  - [Step F. Pick device](#step-f-pick-device)
-  - [Step G. Training loop](#step-g-training-loop)
-  - [Step H. Plot training curves (training history)](#step-h-plot-training-curves-training-history)
-  - [Step I. Visualise val predictions](#step-i-visualise-val-predictions)
-  - [Step J. Per-class IoU on validation set](#step-j-per-class-iou-on-validation-set)
-- [Part 3 — U-Net Prediction on Unlabeled Test Images](#part-3--u-net-prediction-on-unlabeled-test-images)
-  - [Step A. Imports + paths](#step-a-imports--paths)
-  - [Step B. Re-define U-Net (standalone for inference)](#step-b-re-define-u-net-standalone-for-inference)
-  - [Step C. Load weights](#step-c-load-weights)
-  - [Step D. Prediction helpers](#step-d-prediction-helpers)
-  - [Step E. Run predictions on unlabeled images #2–12](#step-e-run-predictions-on-unlabeled-images-212)
-- [Questions &amp; Answering](#questions--answering-8--10-pts--80-pts)
-- [Disclaimer](#disclaimer)
+[Learning Objectives](#learning-objectives)
+
+[Background](#background)
+
+- [1. Image Segmentation](#1-image-segmentation)
+- [2. U-Net Architecture](#2-u-net-architecture)
+- [3. Case Study — MoS₂ Image Dataset](#3-case-study--mos-image-dataset)
+- [4. Dataset Folder Layout](#4-dataset-folder-layout)
+- [5. Workflow Overview](#5-workflow-overview)
+
+* [Install LabelMe (for hand labeling)](#install-labelme-for-hand-labeling)
+
+- [Step A. Install uv](#step-a-install-uv)
+- [Step B. Install Python via uv](#step-b-install-python-via-uv)
+- [Step C. Install and launch LabelMe](#step-c-install-and-launch-labelme)
+- [Step D. Label your images](#step-d-label-your-images)
+- [Step E. Re-package labels and upload to Colab](#step-e-re-package-labels-and-upload-to-colab)
+
+[Setup of Google Colab](#setup-of-google-colab)
+
+- [Step A. Optional cleanup (skip on first run)](#step-a-optional-cleanup-skip-on-first-run)
+- [Step B. Optional unzip (run once)](#step-b-optional-unzip-run-once)
+- [Step C. Check PyTorch and GPU](#step-c-check-pytorch-and-gpu)
+
+[Part 1 — Dataset Preparation](#part-1--dataset-preparation)
+
+- [Step A. Settings](#step-a-settings)
+- [Step B. Output folder structure](#step-b-output-folder-structure)
+- [Step C. Mask helper from LabelMe JSON](#step-c-mask-helper-from-labelme-json)
+- [Step D. Augmentation helpers](#step-d-augmentation-helpers)
+- [Step E. Collect image/json pairs](#step-e-collect-imagejson-pairs)
+- [Step F. Train / val split](#step-f-train--val-split)
+- [Step G. Patch extraction + dataset generation](#step-g-patch-extraction--dataset-generation)
+- [Step H. Sanity-check visualisation](#step-h-sanity-check-visualisation)
+- [Step I. Class balance stats](#step-i-class-balance-stats)
+
+[Part 2 — U-Net Training](#part-2--u-net-training-binary-defect-segmentation)
+
+- [Step A. Print labeled MoS2 image IDs](#step-a-print-labeled-mos2-image-ids)
+- [Step B. (Optional) Install dependencies](#step-b-optional-install-dependencies)
+- [Step C. MoS2 Dataset (`Dataset` + `DataLoader`)](#step-c-mos2-dataset-dataset--dataloader)
+- [Step D. Create the U-Net model](#step-d-create-the-u-net-model)
+- [Step E. Class weights and loss (Focal CE + optional focal Tversky)](#step-e-class-weights-and-loss-focal-ce--optional-focal-tversky)
+- [Step F. Pick device](#step-f-pick-device)
+- [Step G. Training loop](#step-g-training-loop)
+- [Step H. Plot training curves (training history)](#step-h-plot-training-curves-training-history)
+- [Step I. Visualise val predictions](#step-i-visualise-val-predictions)
+- [Step J. Per-class IoU on validation set](#step-j-per-class-iou-on-validation-set)
+
+[Part 3 — U-Net Prediction on Unlabeled Test Images](#part-3--u-net-prediction-on-unlabeled-test-images)
+
+- [Step A. Imports + paths](#step-a-imports--paths)
+- [Step B. Re-define U-Net (standalone for inference)](#step-b-re-define-u-net-standalone-for-inference)
+- [Step C. Load weights](#step-c-load-weights)
+- [Step D. Prediction helpers](#step-d-prediction-helpers)
+- [Step E. Run predictions on unlabeled images #2–12](#step-e-run-predictions-on-unlabeled-images-212)
+
+[Questions &amp; Answering](#questions--answering-8--10-pts--80-pts)
+
+[Disclaimer](#disclaimer)
 
 ## Learning Objectives
 
@@ -114,6 +134,100 @@ For an IoU primer, see: [https://towardsdatascience.com/intersection-over-union-
 
 ---
 
+## Install LabelMe (for hand labeling)
+
+Before training, the raw MoS₂ images need to be hand-labeled with polygon annotations around each defect. We use **LabelMe**, a free open-source labeling tool. The official install guide is at [labelme.io/docs/install-labelme-terminal](https://labelme.io/docs/install-labelme-terminal#install-uv-and-python). The recommended path uses `uv` (a fast Python package and version manager) so LabelMe runs in its own isolated environment without polluting your system Python.
+
+### Step A. Install uv
+
+**macOS / Linux** — run in a terminal:
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+**Windows** — run in PowerShell:
+
+```powershell
+powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+### Step B. Install Python via uv
+
+```bash
+uv python install
+```
+
+This downloads a managed Python interpreter that LabelMe will use. You don't need a system-wide Python.
+
+### Step C. Install and launch LabelMe
+
+```bash
+uv tool install labelme
+labelme
+```
+
+The first time you run `labelme`, you may see an error similar to the screenshot below — usually a missing system Qt dependency:
+
+![LabelMe launch error](github_images/labelme1-launch-error.png)
+
+This is the classic Qt **`xcb`** plugin error on WSL/Linux. The `xcb` plugin *is* found, but it can't initialize because a runtime library it depends on is missing (most often `libxcb-cursor0`, which became a hard requirement in Qt 6).
+
+If you're on WSL2 on Windows 11 (WSLg handles the GUI), here's how to fix it:
+
+**Step 1 — Install the missing xcb dependencies:**
+
+```bash
+sudo apt update
+sudo apt install -y libxcb-cursor0 libxcb-xinerama0 libxcb-icccm4 \
+  libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 \
+  libxcb-shape0 libxkbcommon-x11-0
+```
+
+In ~90% of cases, just `libxcb-cursor0` alone fixes it. Try `labelme` again after this.
+
+**Step 2 — If it still fails, get a real error message:**
+
+```bash
+QT_DEBUG_PLUGINS=1 labelme
+```
+
+This will dump the exact `.so` file it failed to load. Look for a line like `Cannot load library ... cannot open shared object file` — that tells you precisely which library is missing.
+
+Once the fix is applied, `labelme` should launch into the GUI:
+
+![LabelMe launched successfully](github_images/labelme3-launch-successful.png)
+
+### Step D. Label your images
+
+In the LabelMe window, click **Open Dir** and select the `mos2/` folder so every image is loaded into the file list on the right.
+
+![Open the image folder in LabelMe](github_images/labelme4-open-image-folder.png)
+
+Images that already have a `.json` next to them show up with a check mark — clicking one re-loads the existing polygons so you can review or extend them.
+
+![Click on an already-labeled image](github_images/labelme5-click-on-labeled-images.png)
+
+For new defects, the fastest workflow is the built-in **AI Polygon** tool, which calls Segment Anything Model 2 (`sam2`) under the hood — click inside a void and SAM2 proposes a polygon you can accept or refine.
+
+![AI-assisted labeling with SAM2](github_images/labelme6-using-AI-labeling-SAM2.png)
+
+When the label-name dialog appears, **always use the same label name** (`defect`) so every void in every image maps to the same class. The training pipeline only recognises labels listed in `LABEL_MAP`.
+
+![Select the same label name for every defect](github_images/labelme7-select-same-label-name.png)
+
+Click **Save** (or `Ctrl+S`) after each image — LabelMe writes a `.json` file next to the `.png` with the polygon coordinates.
+
+![Save the labels](github_images/labelme8-save-the-labels.png)
+
+### Step E. Re-package labels and upload to Colab
+
+After you've added or updated labels locally, re-zip the dataset folders into a new `image_data.zip` and replace the old one in your Colab session (drag-and-drop into `/content/`, or right-click → **Replace**). Then re-run **Setup → Step B (unzip)** so Colab picks up your fresh `.json` files before Part 1.
+
+![Update image_data.zip on Colab after labeling](github_images/labelme9-update-zip-file-colab.png)
+
+---
+
 ## Setup of Google Colab
 
 Before you start, open [Google Colab](https://colab.research.google.com/) and create a new Jupyter notebook via `File → New notebook`.
@@ -147,7 +261,7 @@ Open your notebook and run the cell below to wipe any previous `mos2*` outputs u
 
 ### Step B. Optional unzip (run once)
 
-Run this cell to extract the bundled `image_data.zip` into `/content/` so the dataset folders (`mos2`, `mos2_val_images_labeled`, `mos2_test_images_unlabeled`, …) appear at the expected paths. Uncomment the line on the very first run, then comment it back out for subsequent runs.
+Run this cell to extract the bundled `image_data.zip` into `/content/` so the dataset folders (`mos2`, `mos2_val_images_labeled`, `mos2_test_images_unlabeled`, …) appear at the expected paths. **Uncomment the line on the very first run, then comment it back out for subsequent runs.**
 
 ```python
 #!unzip image_data.zip -d /content/  
