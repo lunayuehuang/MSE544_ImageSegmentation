@@ -6,6 +6,26 @@
 
 This is a tutorial prepared for the University of Washington **MSE 544 — Computer Vision in Materials Science** class. In this tutorial, students will learn the fundamentals of image segmentation and the U-Net architecture; how to build a complete defect-segmentation pipeline from raw STEM images of MoS₂ — including labeling with LabelMe, dataset preparation, U-Net training on a free Nvidia T4 GPU on Google Colab, and inference on unlabeled test images; and how to iteratively improve segmentation performance through augmentation, loss design, hyperparameter tuning, and additional labeling.
 
+**Before you start**, please download the **image_data.zip** from the Canvas page. After unzipping, your folder should look like this:
+
+![Dataset folder tree after unzipping image_data.zip](github_images/dataset-folder-tree.png)
+
+## From Tabular Data to Image Data
+
+In week3 of this quarter, we introduced the Catboost for numerical regression and feature importance analysis using tabular data. This time, we are exploring how to use deep neural networks (e.g. U-Net) in image learning tasks.
+
+Image data breaks the assumptions you're used to from tabular ML, and almost every design choice in this notebook (U-Net, Dice loss, class weights, augmentation) traces back to one of three differences:
+
+1. **Higher dimensionality** — a 256×256 grayscale image is 65,536 numbers, vs. tens of features in a typical table. Treating each pixel as an independent feature blows up parameter counts (motivating **convolutions**, which share weights across the image) and squares the class-imbalance problem (defects cover ~2% of pixels, so naive accuracy is meaningless — motivating **Dice/weighted losses**).
+2. **Spatial proximity matters** — shuffling columns in a table changes nothing, but a pixel is meaningful only because of its neighbors. **Convolutions** exploit local neighborhoods, and U-Net's **skip connections** preserve fine spatial detail that would otherwise be lost at the bottleneck.
+3. **The output is also an image** — semantic segmentation needs a class label *per pixel*, same shape as the input. Standard CNN classifiers (which compress to one vector) won't work; U-Net is built to compress *and* re-expand back to full resolution.
+
+You might have no idea about any of these comparisons at this moment, but soon you will have better and deeper understanding from this rich hands-on experience.
+
+## Data & Code Policy
+
+> **The MoS₂ image dataset provided by Professor Juan C. Idrobo and the tutorial code (notebook, helper scripts, README) are made available for the sole use of students enrolled in MSE 544.** You may **NOT** redistribute, repost, publish, or share the dataset or code — in whole or in part, in any form (including public GitHub repositories, personal websites, blog posts, presentations outside of class, or third-party AI/ML platforms) — without **prior written approval from the instruction team**. If you'd like to use any of this material outside of the course, please contact the instructors first.
+
 ## Table of Contents
 
 [Learning Objectives](#learning-objectives)
@@ -25,6 +45,12 @@ This is a tutorial prepared for the University of Washington **MSE 544 — Compu
 - [Step C. Install and launch LabelMe](#step-c-install-and-launch-labelme)
 - [Step D. Label your images](#step-d-label-your-images)
 - [Step E. Re-package labels and upload to Colab](#step-e-re-package-labels-and-upload-to-colab)
+
+[Local Setup (if running on your own computer)](#local-setup-if-running-on-your-own-computer)
+
+- [Step A. Install Miniconda and create an environment](#step-a-install-miniconda-and-create-an-environment)
+- [Step B. Install PyTorch and dependencies](#step-b-install-pytorch-and-dependencies)
+- [Step C. Create a new notebook in VS Code and follow the tutorial](#step-c-create-a-new-notebook-in-vs-code-and-follow-the-tutorial)
 
 [Setup of Google Colab](#setup-of-google-colab)
 
@@ -95,7 +121,6 @@ U-Net is a convolutional neural network (CNN) developed for image segmentation. 
 Reference: Ronneberger, O., Fischer, P., & Brox, T. (2015). *U-Net: Convolutional networks for biomedical image segmentation.* MICCAI.
 [https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/](https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/)
 
-
 ### 3. Case Study — MoS₂ Image Dataset
 
 The MoS₂ image dataset (28 raw images) was provided by **Professor Juan C. Idrobo** as part of the Y2025 hackathon challenge for this same class. The simple segmentation task in this assignment is to **identify and mask out all the defects (voids, shown as black regions in the raw images)**.
@@ -114,7 +139,7 @@ A free labeling tool, **LabelMe**, is introduced for hand labeling, with optiona
 | `./mos2_val_images_labeled`         | 3 fixed validation images (used to evaluate your optimisation).                            |
 | `./mos2_test_images_unlabeled`      | 10+ unlabeled test images for final qualitative evaluation.                                |
 
-### 5. Workflow Overview
+### 5. Hands-on Workflow Overview
 
 1. **Manual labeling** of raw MoS₂ images via the LabelMe desktop app. (Some training/validation labels are pre-provided by TA Max Fu.)
 2. **Upload** the image dataset and example notebook to **Google Colab**, then change the runtime to a free **Nvidia T4 GPU** (`Runtime → Change runtime type → T4 GPU`). [https://colab.research.google.com/](https://colab.research.google.com/)
@@ -214,9 +239,71 @@ Click **Save** (or `Ctrl+S`) after each image — LabelMe writes a `.json` file 
 
 ### Step E. Re-package labels and upload to Colab
 
-After you've added or updated labels locally, re-zip the dataset folders into a new `image_data.zip` and replace the old one in your Colab session (drag-and-drop into `/content/`, or right-click → **Replace**). Then re-run **Setup → Step B (unzip)** so Colab picks up your fresh `.json` files before Part 1.
+After you've added or updated labels locally, re-zip the dataset folders into a new `image_data.zip` and replace the old one in your Colab session (drag-and-drop into `/content/`, or right-click → **Replace**). Then re-run **Setup of Google Colab → Step B (unzip)** so Colab picks up your fresh `.json` files before Part 1.
 
 ![Update image_data.zip on Colab after labeling](github_images/labelme9-update-zip-file-colab.png)
+
+---
+
+## Local Setup (if running on your own computer)
+
+If you'd rather skip Colab and run the tutorial on your own machine — for example because you have a Nvidia GPU, an Apple Silicon Mac (MPS), or just want to learn the local workflow — follow the steps below. **You will create a new notebook from scratch in VS Code and copy each cell from this tutorial README.md as you go**, rather than downloading a finished `.ipynb`. This is intentional: typing the cells yourself is the fastest way to actually learn what each step does.
+
+> **GPU note** — training is *much* faster on a GPU. CUDA (Nvidia) and MPS (Apple Silicon) are both supported; CPU works but a single epoch can take 10–30× longer. If you don't have a GPU, prefer Colab.
+
+> **Windows + Nvidia GPU** — open a terminal and run `nvidia-smi` to check your installed CUDA version (shown in the top-right of the table). Match the PyTorch wheel in **Step B** to that version (e.g. CUDA 12.6 → `whl/cu126`, CUDA 12.8 → `whl/cu128`). It is **often fine if your system CUDA is newer than the PyTorch CUDA build** — Nvidia drivers are backward-compatible, so a system showing CUDA 12.8 will happily run a `cu126` PyTorch wheel. Just don't go the other way (don't install a newer PyTorch CUDA than your driver supports).
+
+### Step A. Install Miniconda and create an new environment
+
+Install **Miniconda** from [docs.anaconda.com/miniconda](https://docs.anaconda.com/miniconda/) (pick the installer that matches your OS). After install, open a fresh terminal — **Anaconda Prompt** on Windows, or any terminal on macOS/Linux — and create a dedicated environment for this tutorial:
+
+```bash
+conda create -n pytorch1 python=3.13 -y
+conda activate pytorch1
+```
+
+Keeping this work in its own environment avoids version conflicts with anything else you have installed.
+
+If you have a windows computer with a Nvidia GPU, type  `nvidia-smi` in the terminal to show the existing CUDA version. You might have to debug a bit if you could not find the GPU.
+
+![PyTorch install selector with CUDA 12.6](github_images/pytorch-cuda.png)
+
+### Step B. Install PyTorch and dependencies
+
+PyTorch is now distributed primarily via **pip wheels** (the official install guide no longer lists conda commands), so we install PyTorch with `pip` *inside* the conda env. Use the selector at [pytorch.org/get-started/locally](https://pytorch.org/get-started/locally/) to generate the exact command for your OS / CUDA combination. Examples below use CUDA 12.8.
+
+**Nvidia GPU (CUDA 12.8):**
+
+```bash
+pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
+```
+
+**Apple Silicon (MPS) or CPU-only:**
+
+```bash
+pip3 install torch torchvision torchaudio
+```
+
+Then install the remaining packages used by the notebook (please try to debug using AI tools if missing other python packages):
+
+```bash
+pip3 install numpy pillow matplotlib scikit-learn tqdm jupyter ipykernel -y
+```
+
+For reference, here is the PyTorch install selector showing the CUDA 12.8 option used above:
+
+![PyTorch install selector with CUDA 12.8](github_images/torch-cuda128.png)
+
+### Step C. Create a new notebook in VS Code and follow the tutorial
+
+1. Make a new working folder (e.g. `mse544-unet/`) and place the unzipped dataset folders (`mos2/`, `mos2_val_images_labeled/`, `mos2_test_images_unlabeled/`, `mos2_additional_training_labels/`) inside it.
+2. Open that folder in VS Code (`File → Open Folder…`).
+3. Create a new notebook: `File → New File…` → name it `UNet-<yourUWNetID>.ipynb`.
+4. Click the **kernel picker** in the top-right of the notebook and select **`pytorch1)`** — the conda env you made in Step A.
+5. Walk through this **README** from the top: for each numbered step in **Part 1 / Part 2 / Part 3**, add a markdown cell with the section heading + description, then a code cell with the python from the matching block, and run it. The code is identical to Colab; just skip the two `/content/` cells in **Setup of Google Colab → Step A & Step B** because your dataset is already in the working folder.
+6. **Setup of Google Colab→ Step C (PyTorch + GPU check)** should now print your own GPU (e.g. `RTX 4070`) on CUDA, `mps` on Apple Silicon, or fall back to `cpu`.
+
+Everything else — Part 1 dataset prep, Part 2 training, Part 3 inference — runs identically.
 
 ---
 
