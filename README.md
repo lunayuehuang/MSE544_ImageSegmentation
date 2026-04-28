@@ -155,7 +155,7 @@ In digital image processing and computer vision, image segmentation is the proce
 
 Reference: [https://en.wikipedia.org/wiki/Image_segmentation](https://en.wikipedia.org/wiki/Image_segmentation)
 
-**Intersection over Union (IOU)** is known to be a good metric for measuring overlap between two bounding boxes or masks. If the prediction is completely correct, IoU =1. The lower the IoU, the worse the prediction results. An illustration of IOU concept is shown below:
+**Intersection over Union (IoU)** is known to be a good metric for measuring overlap between two bounding boxes or masks. If the prediction is completely correct, IoU =1. The lower the IoU, the worse the prediction results. An illustration of IoU concept is shown below:
 
 ![Intersection over Union (IoU)](github_images/IOU-master.png)
 
