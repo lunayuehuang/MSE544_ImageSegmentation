@@ -152,7 +152,7 @@ uv python install
 
 This downloads a managed Python interpreter that LabelMe will use. You don't need a system-wide Python.
 
-## Step C. Install and launch LabelMe
+### Step C. Install and launch LabelMe
 
 ```bash
 uv tool install labelme
@@ -1454,55 +1454,87 @@ While training is running, hover over the **RAM / Disk** indicator in the top-ri
 
 # Questions & Answering (8 × 10 pts = 80 pts)
 
-For each question, write your answer in a **new markdown cell directly below it** in your `.ipynb`.
+For each question below, copy the markdown block into a **new markdown cell** in your `.ipynb`, then write your answer in a second markdown cell directly below it.
 
+### Question 1 *(10 pts)*
+
+````markdown
 ### Question 1 *(10 pts)*
 
 Why do we need **train-validation-split** before U-Net training?
 
 *Your answer:*
+````
 
+### Question 2 *(10 pts)*
+
+````markdown
 ### Question 2 *(10 pts)*
 
 Why crop original images into **smaller patches**?
 
 *Your answer:*
+````
 
+### Question 3 *(10 pts)*
+
+````markdown
 ### Question 3 *(10 pts)*
 
 Why is **image augmentation** needed, and what other methods could be used?
 
 *Your answer:*
+````
 
+### Question 4 *(10 pts)*
+
+````markdown
 ### Question 4 *(10 pts)*
 
 How do we address the **class imbalance** (background ≫ defect)?
 
 *Your answer:*
+````
 
+### Question 5 *(10 pts)*
+
+````markdown
 ### Question 5 *(10 pts)*
 
 Explain the **U-Net architecture & skip connections**, and why they are crucial for pixel-wise segmentation.
 
 *Your answer:*
+````
 
+### Question 6 *(10 pts)*
+
+````markdown
 ### Question 6 *(10 pts)*
 
 Describe the **loss function(s)** and **evaluation metric(s)** used in this notebook.
 
 *Your answer:*
+````
 
+### Question 7 *(10 pts)*
+
+````markdown
 ### Question 7 *(10 pts)*
 
 What are the key **hyperparameters** you can fine-tune to improve performance?
 
 *Your answer:*
+````
 
+### Question 8 *(10 pts)*
+
+````markdown
 ### Question 8 *(10 pts)*
 
 **Evaluate** the current training history and test results — is it good? If not, how can it be improved?
 
 *Your answer:*
+````
 
 ---
 
