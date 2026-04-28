@@ -1715,9 +1715,14 @@ Apply your improvement plan from Q8 (modify code, label more images, tune hyperp
 ## References
 
 - Ronneberger, O., Fischer, P., & Brox, T. (2015). *U-Net: Convolutional Networks for Biomedical Image Segmentation*. MICCAI. [https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/](https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/)
-- Wikipedia — [Image segmentation](https://en.wikipedia.org/wiki/Image_segmentation)
-- Towards Data Science — [Intersection over Union (IoU)](https://towardsdatascience.com/intersection-over-union-iou-calculation-for-evaluating-an-image-segmentation-model-8b22e2e84686/)
+- Hong, J., Hu, Z., Probert, M., Li, K., Lv, D., Yang, X., Gu, L., Mao, N., Feng, Q., Xie, L., Zhang, J., Wu, D., Zhang, Z., Jin, C., Ji, W., Zhang, X., Yuan, J., & Zhang, Z. (2015). *Exploring atomic defects in molybdenum disulphide monolayers*. Nature Communications, 6(1), 6293. [https://doi.org/10.1038/ncomms7293](https://doi.org/10.1038/ncomms7293)
+- Wikipedia — Image segmentation — [https://en.wikipedia.org/wiki/Image_segmentation](https://en.wikipedia.org/wiki/Image_segmentation)
+- Towards Data Science — Intersection over Union (IoU) — [https://towardsdatascience.com/intersection-over-union-iou-calculation-for-evaluating-an-image-segmentation-model-8b22e2e84686/](https://towardsdatascience.com/intersection-over-union-iou-calculation-for-evaluating-an-image-segmentation-model-8b22e2e84686/)
 - LabelMe — [https://labelme.io/docs/install-labelme-terminal#install-uv-and-python](https://labelme.io/docs/install-labelme-terminal#install-uv-and-python)
+- Google Colab — [https://colab.research.google.com/](https://colab.research.google.com/)
+- Miniconda — [https://docs.anaconda.com/miniconda/](https://docs.anaconda.com/miniconda/)
+- PyTorch (install selector) — [https://pytorch.org/get-started/locally/](https://pytorch.org/get-started/locally/)
+- uv (Astral) — [https://astral.sh/uv](https://astral.sh/uv)
 
 ---
 
