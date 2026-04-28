@@ -1,4 +1,4 @@
-# MSE544 Computer Vision: Image Segmentation using U-Net
+# Computer Vision: Image Segmentation using U-Net
 
 **Authors: Huilong (Max) Fu, Prof. Luna Huang, Andrew Scott**
 
