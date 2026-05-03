@@ -323,7 +323,12 @@ After you've added or updated labels locally, re-zip the dataset folders into a 
 
 ## Local Setup (if running on your own computer)
 
-If you'd rather skip Colab and run the tutorial on your own machine — for example because you have a Nvidia GPU, an Apple Silicon Mac (MPS), or just want to learn the local workflow — follow the steps below. **You will create a new notebook from scratch in VS Code and copy each cell from this tutorial README.md as you go**, rather than downloading a finished `.ipynb`. This is intentional: typing the cells yourself is the fastest way to actually learn what each step does.
+If you'd rather skip Colab and run the tutorial on your own machine — for example because you have a Nvidia GPU, an Apple Silicon Mac (MPS), or just want to learn the local workflow — follow the steps below.
+
+**If you rather run this on Google Colab or doesn't have a GPU on your own machine, please skip this part and directly go to section "**Setup of Google Colab**" 
+
+Local Setup Begins:
+**You will create a new notebook from scratch in VS Code and copy each cell from this tutorial README.md as you go**, rather than downloading a finished `.ipynb`. This is intentional: typing the cells yourself is the fastest way to actually learn what each step does.
 
 > **GPU note** — training is *much* faster on a GPU. CUDA (Nvidia) and MPS (Apple Silicon) are both supported; CPU works but a single epoch can take 10–30× longer. If you don't have a GPU, prefer Colab.
 
