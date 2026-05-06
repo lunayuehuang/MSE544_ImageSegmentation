@@ -966,7 +966,7 @@ avoiding false alarms.
 
 #### Current setup and homework hook (Q6/Q8)
 
-`total_loss` currently returns **focal CE only**. Questions 6–8 ask you to
+`total_loss` currently returns **focal CE only**. Questions 6 and 8 ask you to
 improve false-negative performance — the commented-out Tversky term is one place
 to look.
 
