@@ -808,8 +808,8 @@ This will be very useful if you want to run the code locally on your own compute
 
 ### Step C. MoS2 Dataset (`Dataset` + `DataLoader`)
 
-A custom PyTorch `Dataset` that loads grayscale image/mask pairs and handles
-two things automatically:
+This part of the code defines a custom PyTorch `Dataset` class that handles three jobs in one place: loading data,
+cleaning up legacy formats, and solving class imbalance before training even starts.
 
 **Legacy mask cleanup** — older masks used values `0–3`; they're remapped to
 binary (`0` = background, `1` = defect) so the rest of the pipeline stays simple.
