@@ -939,9 +939,36 @@ class UNet(nn.Module):
         return self.out(x)   # (B, num_classes, H, W) logits
 ```
 
-### Step E. Class weights and loss (Focal CE + optional focal Tversky)
+### Step E — Class Weights and Loss
 
-Computes inverse-frequency class weights from the training masks (boosting the rare `defect` class) and defines two losses: **focal cross-entropy** (the active baseline) and **focal Tversky** (commented out). The `total_loss` wrapper currently returns CE only — uncomment the combined `CE + 0.45 * Tversky` line to better penalise false negatives, which is one of the recommended improvements for Q6/Q8.
+#### Why class weights?
+
+Defect pixels are rare, so a naive model learns to predict "background" everywhere
+and still scores well. `compute_class_weights` counts every pixel in the training
+masks and gives the `defect` class a higher weight — making the model pay more
+attention to the mistakes that matter.
+
+The weight calculation applies a `power=0.35` dampening so the boost is
+meaningful but not extreme, then multiplies by `CLASS_WEIGHT_MULTIPLIERS`
+(an additional manual `3×` bonus for defects) and caps at `max_weight=24.0`.
+
+#### Two losses are defined
+
+**Focal Cross-Entropy** (`focal_ce_loss`) — the active baseline. Builds on
+standard cross-entropy by down-weighting easy, confident predictions (via the
+`(1 - pt) ** gamma` term), forcing the model to focus on hard or misclassified
+pixels.
+
+**Focal Tversky** (`focal_tversky_loss`) — currently commented out. Directly
+penalises false negatives (missed defects) more than false positives via
+`alpha=0.7, beta=0.3`. Better suited when catching every defect matters more than
+avoiding false alarms.
+
+#### Current setup and homework hook (Q6/Q8)
+
+`total_loss` currently returns **focal CE only**. Questions 6–8 ask you to
+improve false-negative performance — the commented-out Tversky term is one place
+to look.
 
 ```python
 import torch.nn as nn
