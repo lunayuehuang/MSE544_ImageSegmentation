@@ -808,7 +808,16 @@ This will be very useful if you want to run the code locally on your own compute
 
 ### Step C. MoS2 Dataset (`Dataset` + `DataLoader`)
 
-Custom PyTorch `Dataset` that loads each grayscale patch + integer mask, remaps any legacy mask values down to `{0, 1}`, and pre-computes a per-sample weight. Patches that contain a defect get a `+3.0` weight so the `WeightedRandomSampler` later draws them more often — a key trick to fight class imbalance at the **batch** level (not just the loss level).
+A custom PyTorch `Dataset` that loads grayscale image/mask pairs and handles
+two things automatically:
+
+**Legacy mask cleanup** — older masks used values `0–3`; they're remapped to
+binary (`0` = background, `1` = defect) so the rest of the pipeline stays simple.
+
+**Class imbalance** — defects are rare, so images containing one get a `+3.0`
+sampling weight. PyTorch's `WeightedRandomSampler` then draws them 4× more often,
+ensuring defect examples appear in most batches rather than being drowned out by
+background.
 
 ```python
 import os
