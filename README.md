@@ -239,6 +239,8 @@ Before training, the raw MoS₂ images need to be hand-labeled with polygon anno
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
+Then, restart the terminal
+
 **Windows** — run in PowerShell:
 
 ```powershell
