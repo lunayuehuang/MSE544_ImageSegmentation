@@ -239,6 +239,8 @@ Before training, the raw MoS₂ images need to be hand-labeled with polygon anno
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
+Then, restart the terminal
+
 **Windows** — run in PowerShell:
 
 ```powershell
@@ -321,67 +323,8 @@ After you've added or updated labels locally, re-zip the dataset folders into a 
 
 ---
 
-## Local Setup (if running on your own computer)
+If you'd rather skip Colab and run the tutorial on your own machine — for example because you have a Nvidia GPU, an Apple Silicon Mac (MPS), or just want to learn the local workflow — Please follow the instruction of the local setup at the bottom of this tutorial. 
 
-If you'd rather skip Colab and run the tutorial on your own machine — for example because you have a Nvidia GPU, an Apple Silicon Mac (MPS), or just want to learn the local workflow — follow the steps below. **You will create a new notebook from scratch in VS Code and copy each cell from this tutorial README.md as you go**, rather than downloading a finished `.ipynb`. This is intentional: typing the cells yourself is the fastest way to actually learn what each step does.
-
-> **GPU note** — training is *much* faster on a GPU. CUDA (Nvidia) and MPS (Apple Silicon) are both supported; CPU works but a single epoch can take 10–30× longer. If you don't have a GPU, prefer Colab.
-
-> **Windows + Nvidia GPU** — open a terminal and run `nvidia-smi` to check your installed CUDA version (shown in the top-right of the table). Match the PyTorch wheel in **Step B** to that version (e.g. CUDA 12.6 → `whl/cu126`, CUDA 12.8 → `whl/cu128`). It is **often fine if your system CUDA is newer than the PyTorch CUDA build** — Nvidia drivers are backward-compatible, so a system showing CUDA 12.8 will happily run a `cu126` PyTorch wheel. Just don't go the other way (don't install a newer PyTorch CUDA than your driver supports).
-
-### Step A. Install Miniconda and create a new environment
-
-Install **Miniconda** from [docs.anaconda.com/miniconda](https://docs.anaconda.com/miniconda/) (pick the installer that matches your OS). After install, open a fresh terminal — **Anaconda Prompt** on Windows, or any terminal on macOS/Linux — and create a dedicated environment for this tutorial:
-
-```bash
-conda create -n pytorch1 python=3.13 -y
-conda activate pytorch1
-```
-
-Keeping this work in its own environment avoids version conflicts with anything else you have installed.
-
-If you have a windows computer with a Nvidia GPU, type  `nvidia-smi` in the terminal to show the existing CUDA version. You might have to debug a bit if you could not find the GPU.
-
-![PyTorch install selector with CUDA 12.6](github_images/pytorch-cuda.png)
-
-### Step B. Install PyTorch and dependencies
-
-PyTorch is now distributed primarily via **pip wheels** (the official install guide no longer lists conda commands), so we install PyTorch with `pip` *inside* the conda env. Use the selector at [pytorch.org/get-started/locally](https://pytorch.org/get-started/locally/) to generate the exact command for your OS / CUDA combination. Examples below use CUDA 12.8.
-
-**Nvidia GPU (CUDA 12.8):**
-
-```bash
-pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
-```
-
-**Apple Silicon (MPS) or CPU-only:**
-
-```bash
-pip3 install torch torchvision torchaudio
-```
-
-Then install the remaining packages used by the notebook (please try to debug using AI tools if missing other python packages):
-
-```bash
-pip3 install numpy pillow matplotlib scikit-learn tqdm jupyter ipykernel -y
-```
-
-For reference, here is the PyTorch install selector showing the CUDA 12.8 option used above:
-
-![PyTorch install selector with CUDA 12.8](github_images/torch-cuda128.png)
-
-### Step C. Create a new notebook in VS Code and follow the tutorial
-
-1. Make a new working folder (e.g. `mse544-unet/`) and place the unzipped dataset folders (`mos2/`, `mos2_val_images_labeled/`, `mos2_test_images_unlabeled/`, `mos2_additional_training_labels/`) inside it.
-2. Open that folder in VS Code (`File → Open Folder…`).
-3. Create a new notebook: `File → New File…` → name it `UNet-<yourUWNetID>.ipynb`.
-4. Click the **kernel picker** in the top-right of the notebook and select **`(pytorch1)`** — the conda env you made in Step A.
-5. Walk through this **README** from the top: for each numbered step in **Part 1 / Part 2 / Part 3**, add a markdown cell with the section heading + description, then a code cell with the python from the matching block, and run it. The code is identical to Colab; just skip the two `/content/` cells in **Setup of Google Colab → Step A & Step B** because your dataset is already in the working folder.
-6. **Setup of Google Colab→ Step C (PyTorch + GPU check)** should now print your own GPU (e.g. `RTX 4070`) on CUDA, `mps` on Apple Silicon, or fall back to `cpu`.
-
-Everything else — Part 1 dataset prep, Part 2 training, Part 3 inference — runs identically.
-
----
 
 ## Setup of Google Colab
 
@@ -867,7 +810,16 @@ This will be very useful if you want to run the code locally on your own compute
 
 ### Step C. MoS2 Dataset (`Dataset` + `DataLoader`)
 
-Custom PyTorch `Dataset` that loads each grayscale patch + integer mask, remaps any legacy mask values down to `{0, 1}`, and pre-computes a per-sample weight. Patches that contain a defect get a `+3.0` weight so the `WeightedRandomSampler` later draws them more often — a key trick to fight class imbalance at the **batch** level (not just the loss level).
+This part of the code defines a custom PyTorch `Dataset` class that handles three jobs in one place: loading data,
+cleaning up legacy formats, and solving class imbalance before training even starts.
+
+**Legacy mask cleanup** — older masks used values `0–3`; they're remapped to
+binary (`0` = background, `1` = defect) so the rest of the pipeline stays simple.
+
+**Class imbalance** — defects are rare, so images containing one get a `+3.0`
+sampling weight. PyTorch's `WeightedRandomSampler` then draws them 4× more often,
+ensuring defect examples appear in most batches rather than being drowned out by
+background.
 
 ```python
 import os
@@ -989,9 +941,36 @@ class UNet(nn.Module):
         return self.out(x)   # (B, num_classes, H, W) logits
 ```
 
-### Step E. Class weights and loss (Focal CE + optional focal Tversky)
+### Step E — Class Weights and Loss
 
-Computes inverse-frequency class weights from the training masks (boosting the rare `defect` class) and defines two losses: **focal cross-entropy** (the active baseline) and **focal Tversky** (commented out). The `total_loss` wrapper currently returns CE only — uncomment the combined `CE + 0.45 * Tversky` line to better penalise false negatives, which is one of the recommended improvements for Q6/Q8.
+#### Why class weights?
+
+Defect pixels are rare, so a naive model learns to predict "background" everywhere
+and still scores well. `compute_class_weights` counts every pixel in the training
+masks and gives the `defect` class a higher weight — making the model pay more
+attention to the mistakes that matter.
+
+The weight calculation applies a `power=0.35` dampening so the boost is
+meaningful but not extreme, then multiplies by `CLASS_WEIGHT_MULTIPLIERS`
+(an additional manual `3×` bonus for defects) and caps at `max_weight=24.0`.
+
+#### Two losses are defined
+
+**Focal Cross-Entropy** (`focal_ce_loss`) — the active baseline. Builds on
+standard cross-entropy by down-weighting easy, confident predictions (via the
+`(1 - pt) ** gamma` term), forcing the model to focus on hard or misclassified
+pixels.
+
+**Focal Tversky** (`focal_tversky_loss`) — currently commented out. Directly
+penalises false negatives (missed defects) more than false positives via
+`alpha=0.7, beta=0.3`. Better suited when catching every defect matters more than
+avoiding false alarms.
+
+#### Current setup and homework hook (Q6/Q8)
+
+`total_loss` currently returns **focal CE only**. Questions 6 and 8 ask you to
+improve false-negative performance — the commented-out Tversky term is one place
+to look.
 
 ```python
 import torch.nn as nn
@@ -1720,6 +1699,72 @@ Apply your improvement plan from Q8 (modify code, label more images, tune hyperp
 ![Bonus screenshot using LabelMe](github_images/bonus-screenshot-using-labelme.png)
 
 (The End)
+
+---
+
+
+## Local Setup (if running on your own computer)
+
+If you'd rather skip Colab and run the tutorial on your own machine — for example because you have a Nvidia GPU, an Apple Silicon Mac (MPS), or just want to learn the local workflow — follow the steps below.
+
+Local Setup Begins:
+**You will create a new notebook from scratch in VS Code and copy each cell from this tutorial README.md as you go**, rather than downloading a finished `.ipynb`. This is intentional: typing the cells yourself is the fastest way to actually learn what each step does.
+
+> **GPU note** — training is *much* faster on a GPU. CUDA (Nvidia) and MPS (Apple Silicon) are both supported; CPU works but a single epoch can take 10–30× longer. If you don't have a GPU, prefer Colab.
+
+> **Windows + Nvidia GPU** — open a terminal and run `nvidia-smi` to check your installed CUDA version (shown in the top-right of the table). Match the PyTorch wheel in **Step B** to that version (e.g. CUDA 12.6 → `whl/cu126`, CUDA 12.8 → `whl/cu128`). It is **often fine if your system CUDA is newer than the PyTorch CUDA build** — Nvidia drivers are backward-compatible, so a system showing CUDA 12.8 will happily run a `cu126` PyTorch wheel. Just don't go the other way (don't install a newer PyTorch CUDA than your driver supports).
+
+### Step A. Install Miniconda and create a new environment
+
+Install **Miniconda** from [docs.anaconda.com/miniconda](https://docs.anaconda.com/miniconda/) (pick the installer that matches your OS). After install, open a fresh terminal — **Anaconda Prompt** on Windows, or any terminal on macOS/Linux — and create a dedicated environment for this tutorial:
+
+```bash
+conda create -n pytorch1 python=3.13 -y
+conda activate pytorch1
+```
+
+Keeping this work in its own environment avoids version conflicts with anything else you have installed.
+
+If you have a windows computer with a Nvidia GPU, type  `nvidia-smi` in the terminal to show the existing CUDA version. You might have to debug a bit if you could not find the GPU.
+
+![PyTorch install selector with CUDA 12.6](github_images/pytorch-cuda.png)
+
+### Step B. Install PyTorch and dependencies
+
+PyTorch is now distributed primarily via **pip wheels** (the official install guide no longer lists conda commands), so we install PyTorch with `pip` *inside* the conda env. Use the selector at [pytorch.org/get-started/locally](https://pytorch.org/get-started/locally/) to generate the exact command for your OS / CUDA combination. Examples below use CUDA 12.8.
+
+**Nvidia GPU (CUDA 12.8):**
+
+```bash
+pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
+```
+
+**Apple Silicon (MPS) or CPU-only:**
+
+```bash
+pip3 install torch torchvision torchaudio
+```
+
+Then install the remaining packages used by the notebook (please try to debug using AI tools if missing other python packages):
+
+```bash
+pip3 install numpy pillow matplotlib scikit-learn tqdm jupyter ipykernel -y
+```
+
+For reference, here is the PyTorch install selector showing the CUDA 12.8 option used above:
+
+![PyTorch install selector with CUDA 12.8](github_images/torch-cuda128.png)
+
+### Step C. Create a new notebook in VS Code and follow the tutorial
+
+1. Make a new working folder (e.g. `mse544-unet/`) and place the unzipped dataset folders (`mos2/`, `mos2_val_images_labeled/`, `mos2_test_images_unlabeled/`, `mos2_additional_training_labels/`) inside it.
+2. Open that folder in VS Code (`File → Open Folder…`).
+3. Create a new notebook: `File → New File…` → name it `UNet-<yourUWNetID>.ipynb`.
+4. Click the **kernel picker** in the top-right of the notebook and select **`(pytorch1)`** — the conda env you made in Step A.
+5. Walk through this **README** from the top: for each numbered step in **Part 1 / Part 2 / Part 3**, add a markdown cell with the section heading + description, then a code cell with the python from the matching block, and run it. The code is identical to Colab; just skip the two `/content/` cells in **Setup of Google Colab → Step A & Step B** because your dataset is already in the working folder.
+6. Go to **Step C (PyTorch + GPU check) of "Setup of Google Colab→"** and it should now print your own GPU (e.g. `RTX 4070`) on CUDA, `mps` on Apple Silicon, or fall back to `cpu`.
+
+Everything else — Part 1 dataset prep, Part 2 training, Part 3 inference — runs identically.
 
 ---
 
