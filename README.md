@@ -103,15 +103,15 @@ You might have no idea about any of these comparisons at this moment, but soon y
 
 [Part 1 — Dataset Preparation](#part-1--dataset-preparation)
 
-- [Step A. Settings](#step-a-settings)
-- [Step B. Output folder structure](#step-b-output-folder-structure)
-- [Step C. Mask helper from LabelMe JSON](#step-c-mask-helper-from-labelme-json)
-- [Step D. Augmentation helpers](#step-d-augmentation-helpers)
-- [Step E. Collect image/json pairs](#step-e-collect-imagejson-pairs)
-- [Step F. Train / val split](#step-f-train--val-split)
-- [Step G. Patch extraction + dataset generation](#step-g-patch-extraction--dataset-generation)
-- [Step H. Sanity-check visualisation](#step-h-sanity-check-visualisation)
-- [Step I. Class balance stats](#step-i-class-balance-stats)
+- [Step 1.A. Settings](#step-a-settings)
+- [Step 1.B. Output folder structure](#step-b-output-folder-structure)
+- [Step 1.C. Mask helper from LabelMe JSON](#step-c-mask-helper-from-labelme-json)
+- [Step 1.D. Augmentation helpers](#step-d-augmentation-helpers)
+- [Step 1.E. Collect image/json pairs](#step-e-collect-imagejson-pairs)
+- [Step 1.F. Train / val split](#step-f-train--val-split)
+- [Step 1.G. Patch extraction + dataset generation](#step-g-patch-extraction--dataset-generation)
+- [Step 1.H. Sanity-check visualisation](#step-h-sanity-check-visualisation)
+- [Step 1.I. Class balance stats](#step-i-class-balance-stats)
 
 [Part 2 — U-Net Training](#part-2--u-net-training-binary-defect-segmentation)
 
