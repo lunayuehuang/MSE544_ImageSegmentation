@@ -679,15 +679,18 @@ CLASS_COLORS = {
     1: 'yellow',     # defect
 }
 
-# Pick the first train patch that has annotations
+
 train_imgs  = sorted(os.listdir(paths['images_train']))
 train_masks = sorted(os.listdir(paths['masks_train']))
 
-for fname in train_imgs[:10]:
-    img  = np.array(Image.open(os.path.join(paths['images_train'], fname)))
-    mask = np.array(Image.open(os.path.join(paths['masks_train'], fname)))
-    if mask.max() > 0:
+#Pick a random example for demonstration 
+while True:
+  fname = random.choice(train_imgs)
+  img  = np.array(Image.open(os.path.join(paths['images_train'], fname)))
+  mask = np.array(Image.open(os.path.join(paths['masks_train'], fname)))
+  if mask.max() > 0:
         break
+
 
 fig, axes = plt.subplots(1, 2, figsize=(10, 5))
 
