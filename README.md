@@ -115,24 +115,24 @@ You might have no idea about any of these comparisons at this moment, but soon y
 
 [Part 2 — U-Net Training](#part-2--u-net-training-binary-defect-segmentation)
 
-- [Step A. Print labeled MoS2 image IDs](#step-a-print-labeled-mos2-image-ids)
-- [Step B. (Optional) Install dependencies](#step-b-optional-install-dependencies)
-- [Step C. MoS2 Dataset (`Dataset` + `DataLoader`)](#step-c-mos2-dataset-dataset--dataloader)
-- [Step D. Create the U-Net model](#step-d-create-the-u-net-model)
-- [Step E. Class weights and loss (Focal CE + optional focal Tversky)](#step-e-class-weights-and-loss-focal-ce--optional-focal-tversky)
-- [Step F. Pick device](#step-f-pick-device)
-- [Step G. Training loop](#step-g-training-loop)
-- [Step H. Plot training curves (training history)](#step-h-plot-training-curves-training-history)
-- [Step I. Visualise val predictions](#step-i-visualise-val-predictions)
-- [Step J. Per-class IoU on validation set](#step-j-per-class-iou-on-validation-set)
+- [Step 2.A. Print labeled MoS2 image IDs](#step-2a-print-labeled-mos2-image-ids)
+- [Step 2.B. (Optional) Install dependencies](#step-2b-optional-install-dependencies)
+- [Step 2.C. MoS2 Dataset (`Dataset` + `DataLoader`)](#step-2c-mos2-dataset-dataset--dataloader)
+- [Step 2.D. Create the U-Net model](#step-2d-create-the-u-net-model)
+- [Step 2.E. Class weights and loss (Focal CE + optional focal Tversky)](#step-2e-class-weights-and-loss-focal-ce--optional-focal-tversky)
+- [Step 2.F. Pick device](#step-2f-pick-device)
+- [Step 2.G. Training loop](#step-2g-training-loop)
+- [Step 2.H. Plot training curves (training history)](#step-2h-plot-training-curves-training-history)
+- [Step 2.I. Visualise val predictions](#step-2i-visualise-val-predictions)
+- [Step 2.J. Per-class IoU on validation set](#step-2j-per-class-iou-on-validation-set)
 
 [Part 3 — U-Net Prediction on Unlabeled Test Images](#part-3--u-net-prediction-on-unlabeled-test-images)
 
-- [Step A. Imports + paths](#step-a-imports--paths)
-- [Step B. Re-define U-Net (standalone for inference)](#step-b-re-define-u-net-standalone-for-inference)
-- [Step C. Load weights](#step-c-load-weights)
-- [Step D. Prediction helpers](#step-d-prediction-helpers)
-- [Step E. Run predictions on unlabeled images #2–12](#step-e-run-predictions-on-unlabeled-images-212)
+- [Step 3.A. Imports + paths](#step-3a-imports--paths)
+- [Step 3.B. Re-define U-Net (standalone for inference)](#step-3b-re-define-u-net-standalone-for-inference)
+- [Step 3.C. Load weights](#step-3c-load-weights)
+- [Step 3.D. Prediction helpers](#step-3d-prediction-helpers)
+- [Step 3.E. Run predictions on unlabeled images #2–12](#step-3e-run-predictions-on-unlabeled-images-212)
 
 [Questions &amp; Answering](#questions--answering-8--10-pts--80-pts)
 
@@ -665,7 +665,7 @@ Expected output — train and val patch counts plus the number of empty patches 
 
 ### Step 1.H. Sanity-check visualisation
 
-Loads the first training patch that contains a defect and overlays its mask in **yellow** on the grayscale image. If the yellow blob doesn't visually align with the dark void in the patch, your label-to-mask conversion is broken — fix it before training.
+Loads the first training patch that contains a defect and overlays its mask in **yellow** on the grayscale image. If the yellow blob doesn't visually align with the dark void in the patch, your label-to-mask conversion is broken — fix it before training. You can re-run this cell to see multiple examples. 
 
 ```python
 # ============================================================
