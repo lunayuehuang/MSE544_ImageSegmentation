@@ -1247,6 +1247,7 @@ print(f'Best val defect IoU: {max(history["val_target_iou"]):.4f} at epoch {best
 Expected output — three side-by-side panels (Train vs Val loss, Defect IoU, LR schedule) with the best epoch marked:
 
 ![Training history plots](github_images/2H-plot-training-history.png)
+Don't see much on your graphic? How many epochs have you trained? Might be because you have only trained 1 epoch. :) 
 
 ### Step 2.I. Visualise val predictions
 
@@ -1315,7 +1316,7 @@ Expected output — 3-panel figures per validation patch (original / ground trut
 
 ![Visualise validation predictions](github_images/2I-visualise-val-predictions.png)
 
-Don't see much on your graphic? How many epochs have you trained? Might be because you have only trained 1 epoch. :) 
+
 
 ### Step 2.J. Per-class IoU on validation set
 
