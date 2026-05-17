@@ -1315,6 +1315,8 @@ Expected output — 3-panel figures per validation patch (original / ground trut
 
 ![Visualise validation predictions](github_images/2I-visualise-val-predictions.png)
 
+Don't see much on your graphic? How many epochs have you trained? Might be because you have only trained 1 epoch. :) 
+
 ### Step 2.J. Per-class IoU on validation set
 
 Computes the per-class IoU on the full validation set and prints the headline **mean defect IoU** — this is the number the 20 improvement points are graded against. Anything substantially above the baseline counts as progress.
