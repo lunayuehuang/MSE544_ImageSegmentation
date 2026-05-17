@@ -1077,7 +1077,7 @@ Expected output — `Using device: cuda` on a Colab T4 runtime:
 
 ![Pick device output](github_images/2F-pick-device.png)
 
-### Step G. Training loop
+### Step 2.G. Training loop
 
 The main training cell. Sets the hyperparameters (`BATCH_SIZE`, `EPOCHS=10` baseline, `LR=1e-4`, `WEIGHT_DECAY=3e-4`), builds a **weighted-sampler DataLoader** for training, and runs an epoch loop with AdamW, gradient clipping, and `ReduceLROnPlateau`. Each epoch tracks train/val loss and defect IoU; the **best-IoU checkpoint** is saved to `unet_best.pt`, with early stopping after 3 stagnant epochs. **Bumping `EPOCHS` to 20–30** is the simplest knob for Q7.
 
