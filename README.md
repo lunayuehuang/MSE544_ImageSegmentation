@@ -93,9 +93,9 @@ You might have no idea about any of these comparisons at this moment, but soon y
 
 [References](#references)
 
-[Questions &amp; Answering](#questions--answering-8--10-pts--80-pts)
-
 [Disclaimer](#disclaimer)
+
+[Questions &amp; Answering](#questions--answering-8--10-pts--80-pts)
 
 ## Learning Objectives
 
@@ -1635,84 +1635,90 @@ Everything else — Part 1 dataset prep, Part 2 training, Part 3 inference — r
 
 ---
 
-# Questions & Answering (8 × 10 pts = 80 pts)
+## Disclaimer
+
+The code in this repository (the notebook cells, helper functions, and accompanying README descriptions) was generated with the assistance of **ChatGPT (OpenAI)** and **Claude Code (Anthropic)**, working from pre-defined instructions and prompts written by the instructors. All AI-generated content has been reviewed, tested, and adapted by the instructors for use in this class. Students are expected to read, understand, and modify the code to answer the assignment questions and improve model performance.
+
+---
+
+# Questions & Answering (80%) + Improvement (20%)
 
 For each question below, copy the markdown block into a **new markdown cell** in your `.ipynb`, then write your answer in a second markdown cell directly below it.
 
-### Question 1 *(10 pts)*
+### Question 1 *(10%)*
 
 ````markdown
-### Question 1 *(10 pts)*
+### Question 1 *(10%)*
 
 Why do we need **train-validation-split** before U-Net training?
 
 *Your answer:*
 ````
 
-### Question 2 *(10 pts)*
+### Question 2 *(10%)*
 
 ````markdown
-### Question 2 *(10 pts)*
+### Question 2 *(10%)*
 
 Why crop original images into **smaller patches**?
 
 *Your answer:*
 ````
 
-### Question 3 *(10 pts)*
+### Question 3 *(10%)*
 
 ````markdown
-### Question 3 *(10 pts)*
+### Question 3 *(10%)*
 
 Why is **image augmentation** needed, and what other methods could be used?
 
 *Your answer:*
 ````
 
-### Question 4 *(10 pts)*
+### Question 4 *(10%)*
 
 ````markdown
-### Question 4 *(10 pts)*
+### Question 4 *(10%)*
 
 How do we address the **class imbalance** (background ≫ defect)?
 
 *Your answer:*
 ````
 
-### Question 5 *(10 pts)*
+### Question 5 *(10%)*
 
 ````markdown
-### Question 5 *(10 pts)*
+### Question 5 *(10%)*
 
 Explain the **U-Net architecture & skip connections**, and why they are crucial for pixel-wise segmentation.
 
 *Your answer:*
 ````
 
-### Question 6 *(10 pts)*
+### Question 6 *(10%)*
 
 ````markdown
-### Question 6 *(10 pts)*
+### Question 6 *(10%)*
 
 Describe the **loss function(s)** and **evaluation metric(s)** used in this notebook.
 
 *Your answer:*
 ````
 
-### Question 7 *(10 pts)*
+### Question 7 *(10%)*
 
 ````markdown
-### Question 7 *(10 pts)*
+### Question 7 *(10%)*
 
 What are the key **hyperparameters** you can fine-tune to improve performance?
 
 *Your answer:*
 ````
 
-### Question 8 *(10 pts)*
+### Question 8 *(10%)*
 
 ````markdown
-### Question 8 *(10 pts)*
+### Question 8 *(10%)*
 
 **Evaluate** the current training history and test results — is it good? If not, how can it be improved?
 
@@ -1721,18 +1727,18 @@ What are the key **hyperparameters** you can fine-tune to improve performance?
 
 ---
 
-### Improvement — **20 pts**
+### Improvement — **20%**
 
 Apply your improvement plan from Q8 (modify code, label more images, tune hyperparameters, etc.) and re-run. Points are awarded based on how much your final **defect IoU** exceeds the baseline, and on the visual cleanliness of predicted masks on the unlabeled test images.
 
 ---
 
-### Submission (100%)
+## Submission (baseline, 100%)
 
 - Upload your updated `.ipynb` with every question answered (80% = 8*10%).
 - U-Net performance improved with new results shown in the notebook (20%).
 
-### Bonus Points (5%):
+## Bonus Points (extra, 20%):
 - Upload 5 screenshots of using LabelMe on previous unlabeled images (5 of them) from the training image folder "/mos2".
 - Within LabelMe GUI, You are welcome to use either Create-AI-Polygon (SAM2 balanced), or just label by hand: Create-Polygons.
 - Example:
@@ -1740,9 +1746,3 @@ Apply your improvement plan from Q8 (modify code, label more images, tune hyperp
 ![Bonus screenshot using LabelMe](github_images/bonus-screenshot-using-labelme.png)
 
 (The End)
-
----
-
-## Disclaimer
-
-The code in this repository (the notebook cells, helper functions, and accompanying README descriptions) was generated with the assistance of **ChatGPT (OpenAI)** and **Claude Code (Anthropic)**, working from pre-defined instructions and prompts written by the instructors. All AI-generated content has been reviewed, tested, and adapted by the instructors for use in this class. Students are expected to read, understand, and modify the code to answer the assignment questions and improve model performance.
