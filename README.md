@@ -38,7 +38,7 @@ You might have no idea about any of these comparisons at this moment, but soon y
 - [4. Dataset Folder Layout from image_data.zip](#4-dataset-folder-layout-from-image_datazip)
 - [5. Hands-on Workflow Overview](#5-hands-on-workflow-overview)
 
-[Setup of Google Colab](#setup-of-google-colab)
+[Part 0 — Setup of Google Colab](#part-0--setup-of-google-colab)
 
 - [Step 0.A. Optional cleanup (skip on first run)](#step-0a-optional-cleanup-skip-on-first-run)
 - [Step 0.B. Optional unzip (run once)](#step-0b-optional-unzip-run-once)
@@ -186,7 +186,7 @@ An example is given below:
 
 ---
 
-## Setup of Google Colab
+# Part 0 — Setup of Google Colab
 
 Before you start, open [Google Colab](https://colab.research.google.com/) and create a new Jupyter notebook via `File → New notebook`.
 
@@ -1550,7 +1550,7 @@ Click **Save** (or `Ctrl+S`) after each image — LabelMe writes a `.json` file 
 
 ### Step 4.E. Re-package labels and upload to Colab
 
-After you've added or updated labels locally, re-zip the dataset folders into a new `image_data.zip` and replace the old one in your Colab session (drag-and-drop into `/content/`, or right-click → **Replace**). Then re-run **Setup of Google Colab → Step 0.B (unzip)** so Colab picks up your fresh `.json` files before Part 1.
+After you've added or updated labels locally, re-zip the dataset folders into a new `image_data.zip` and replace the old one in your Colab session (drag-and-drop into `/content/`, or right-click → **Replace**). Then re-run **Part 0 — Setup of Google Colab → Step 0.B (unzip)** so Colab picks up your fresh `.json` files before Part 1.
 
 ![Update image_data.zip on Colab after labeling](github_images/labelme9-update-zip-file-colab.png)
 
@@ -1614,8 +1614,8 @@ For reference, here is the PyTorch install selector showing the CUDA 12.8 option
 2. Open that folder in VS Code (`File → Open Folder…`).
 3. Create a new notebook: `File → New File…` → name it `UNet-<yourUWNetID>.ipynb`.
 4. Click the **kernel picker** in the top-right of the notebook and select **`(pytorch1)`** — the conda env you made in Step 5.A.
-5. Walk through this **README** from the top: for each numbered step in **Part 1 / Part 2 / Part 3**, add a markdown cell with the section heading + description, then a code cell with the python from the matching block, and run it. The code is identical to Colab; just skip the two `/content/` cells in **Setup of Google Colab → Step 0.A & Step 0.B** because your dataset is already in the working folder.
-6. Go to **Step 0.C (PyTorch + GPU check) of "Setup of Google Colab→"** and it should now print your own GPU (e.g. `RTX 4070`) on CUDA, `mps` on Apple Silicon, or fall back to `cpu`.
+5. Walk through this **README** from the top: for each numbered step in **Part 1 / Part 2 / Part 3**, add a markdown cell with the section heading + description, then a code cell with the python from the matching block, and run it. The code is identical to Colab; just skip the two `/content/` cells in **Part 0 — Setup of Google Colab → Step 0.A & Step 0.B** because your dataset is already in the working folder.
+6. Go to **Step 0.C (PyTorch + GPU check) of "Part 0 — Setup of Google Colab→"** and it should now print your own GPU (e.g. `RTX 4070`) on CUDA, `mps` on Apple Silicon, or fall back to `cpu`.
 
 Everything else — Part 1 dataset prep, Part 2 training, Part 3 inference — runs identically.
 
