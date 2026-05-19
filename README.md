@@ -16,15 +16,15 @@ In week3 of this quarter, we introduced the CatBoost for numerical regression an
 
 Image data breaks the assumptions you're used to from tabular ML, and almost every design choice in this notebook (U-Net, Dice loss, class weights, augmentation) traces back to one of three differences:
 
-1. **Higher dimensionality** — a 256×256 grayscale image is 65,536 numbers, vs. tens of features in a typical table. Treating each pixel as an independent feature blows up parameter counts (motivating **convolutions**, which share weights across the image) and squares the class-imbalance problem (defects cover ~2% of pixels, so naive accuracy is meaningless — motivating **Dice/weighted losses**).
-2. **Spatial proximity matters** — shuffling columns in a table changes nothing, but a pixel is meaningful only because of its neighbors. **Convolutions** exploit local neighborhoods, and U-Net's **skip connections** preserve fine spatial detail that would otherwise be lost at the bottleneck.
+1. **Higher dimensionality** — a 256×256 grayscale image is 65,536 numbers, vs. tens of features in a typical numerical table. Treating each pixel as an independent feature blows up parameter counts (motivating **convolutions**, which share weights across the image) and squares the class-imbalance problem (defects cover ~2% of pixels, so naive accuracy is meaningless — motivating **Dice/weighted losses**).
+2. **Spatial proximity matters** — shuffling columns in a numerical table changes nothing, but a pixel is meaningful only because of its neighbors. **Convolutions** exploit local neighborhoods, and U-Net's **skip connections** preserve fine spatial detail that would otherwise be lost at the bottleneck.
 3. **The output is also an image** — semantic segmentation needs a class label *per pixel*, same shape as the input. Standard CNN classifiers (which compress to one vector) won't work; U-Net is built to compress *and* re-expand back to full resolution.
 
-You might have no idea about any of these comparisons at this moment, but soon you will have better and deeper understanding from this rich hands-on experience.
+You might have no idea about any of these comparisons at this moment, but soon you will have better understanding from this rich hands-on experience.
 
-## Data & Code Policy
+## Data & Code Sharing Policy
 
-> **The MoS₂ image dataset provided by Professor Juan C. Idrobo and the tutorial code (notebook, helper scripts, README) are made available for the sole use of students enrolled in MSE 544.** You may **NOT** redistribute, repost, publish, or share the dataset or code — in whole or in part, in any form (including public GitHub repositories, personal websites, blog posts, presentations outside of class, or third-party AI/ML platforms) — without **prior written approval from the instruction team**. If you'd like to use any of this material outside of the course, please contact the instructors first.
+> **The MoS₂ image dataset provided by Professor Juan C. Idrobo and this tutorial code (notebook, github_images, README.md) are made available for the sole use of students enrolled in MSE 544.** You may **NOT** redistribute, repost, publish, or share the dataset or code — in whole or in part, in any form (including public GitHub repositories, personal websites, blog posts, presentations outside of class, or third-party AI/ML platforms) — without **prior written approval from the instruction team**. If you'd like to use any of this material outside of the course, please contact our instructors first.
 
 ## Table of Contents
 
