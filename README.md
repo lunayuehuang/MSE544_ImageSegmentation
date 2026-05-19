@@ -65,25 +65,11 @@ You might have no idea about any of these comparisons at this moment, but soon y
 - [4. Dataset Folder Layout from image_data.zip](#4-dataset-folder-layout-from-image_datazip)
 - [5. Hands-on Workflow Overview](#5-hands-on-workflow-overview)
 
-[Install LabelMe (for hand labeling)](#install-labelme-for-hand-labeling)
-
-- [Step 0.A. Install uv](#step-0a-install-uv)
-- [Step 0.B. Install Python via uv](#step-0b-install-python-via-uv)
-- [Step 0.C. Install and launch LabelMe](#step-0c-install-and-launch-labelme)
-- [Step 0.D. Label your images](#step-0d-label-your-images)
-- [Step 0.E. Re-package labels and upload to Colab](#step-0e-re-package-labels-and-upload-to-colab)
-
-[Local Setup (if running on your own computer)](#local-setup-if-running-on-your-own-computer)
-
-- [Step 0.F. Install Miniconda and create a new environment](#step-0f-install-miniconda-and-create-a-new-environment)
-- [Step 0.G. Install PyTorch and dependencies](#step-0g-install-pytorch-and-dependencies)
-- [Step 0.H. Create a new notebook in VS Code and follow the tutorial](#step-0h-create-a-new-notebook-in-vs-code-and-follow-the-tutorial)
-
 [Setup of Google Colab](#setup-of-google-colab)
 
-- [Step 0.I. Optional cleanup (skip on first run)](#step-0i-optional-cleanup-skip-on-first-run)
-- [Step 0.J. Optional unzip (run once)](#step-0j-optional-unzip-run-once)
-- [Step 0.K. Check PyTorch and GPU](#step-0k-check-pytorch-and-gpu)
+- [Step 0.A. Optional cleanup (skip on first run)](#step-0a-optional-cleanup-skip-on-first-run)
+- [Step 0.B. Optional unzip (run once)](#step-0b-optional-unzip-run-once)
+- [Step 0.C. Check PyTorch and GPU](#step-0c-check-pytorch-and-gpu)
 
 [Part 1 — Dataset Preparation](#part-1--dataset-preparation)
 
@@ -117,6 +103,22 @@ You might have no idea about any of these comparisons at this moment, but soon y
 - [Step 3.C. Load weights](#step-3c-load-weights)
 - [Step 3.D. Prediction helpers](#step-3d-prediction-helpers)
 - [Step 3.E. Run predictions on unlabeled images #2–12](#step-3e-run-predictions-on-unlabeled-images-212)
+
+[Part 4 — Install LabelMe (for hand labeling)](#part-4--install-labelme-for-hand-labeling)
+
+- [Step 4.A. Install uv](#step-4a-install-uv)
+- [Step 4.B. Install Python via uv](#step-4b-install-python-via-uv)
+- [Step 4.C. Install and launch LabelMe](#step-4c-install-and-launch-labelme)
+- [Step 4.D. Label your images](#step-4d-label-your-images)
+- [Step 4.E. Re-package labels and upload to Colab](#step-4e-re-package-labels-and-upload-to-colab)
+
+[Part 5 — Local Setup (if running on your own computer)](#part-5--local-setup-if-running-on-your-own-computer)
+
+- [Step 5.A. Install Miniconda and create a new environment](#step-5a-install-miniconda-and-create-a-new-environment)
+- [Step 5.B. Install PyTorch and dependencies](#step-5b-install-pytorch-and-dependencies)
+- [Step 5.C. Create a new notebook in VS Code and follow the tutorial](#step-5c-create-a-new-notebook-in-vs-code-and-follow-the-tutorial)
+
+[References](#references)
 
 [Questions &amp; Answering](#questions--answering-8--10-pts--80-pts)
 
@@ -211,105 +213,6 @@ An example is given below:
 
 ---
 
-## Install LabelMe (for hand labeling)
-
-Before training, the raw MoS₂ images need to be hand-labeled with polygon annotations around each defect. We use **LabelMe**, a free open-source labeling tool. The official install guide is at [labelme.io/docs/install-labelme-terminal](https://labelme.io/docs/install-labelme-terminal#install-uv-and-python). The recommended path uses `uv` (a fast Python package and version manager) so LabelMe runs in its own isolated environment without polluting your system Python.
-
-### Step 0.A. Install uv
-
-**macOS / Linux** — run in a terminal:
-
-```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
-
-Then, restart the terminal
-
-**Windows** — run in PowerShell:
-
-```powershell
-powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
-```
-
-### Step 0.B. Install Python via uv
-
-```bash
-uv python install
-```
-
-This downloads a managed Python interpreter that LabelMe will use. You don't need a system-wide Python.
-
-### Step 0.C. Install and launch LabelMe
-
-```bash
-uv tool install labelme
-labelme
-```
-
-The first time you run `labelme`, you may see an error similar to the screenshot below — usually a missing system Qt dependency:
-
-![LabelMe launch error](github_images/labelme1-launch-error.png)
-
-This is the classic Qt **`xcb`** plugin error on WSL/Linux. The `xcb` plugin *is* found, but it can't initialize because a runtime library it depends on is missing (most often `libxcb-cursor0`, which became a hard requirement in Qt 6).
-
-If you're on WSL2 on Windows 11 (WSLg handles the GUI), here's how to fix it:
-
-**Step 1 — Install the missing xcb dependencies:**
-
-```bash
-sudo apt update
-sudo apt install -y libxcb-cursor0 libxcb-xinerama0 libxcb-icccm4 \
-  libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 \
-  libxcb-shape0 libxkbcommon-x11-0
-```
-
-In ~90% of cases, just `libxcb-cursor0` alone fixes it. Try `labelme` again after this.
-
-**Step 2 — If it still fails, get a real error message:**
-
-```bash
-QT_DEBUG_PLUGINS=1 labelme
-```
-
-This will dump the exact `.so` file it failed to load. Look for a line like `Cannot load library ... cannot open shared object file` — that tells you precisely which library is missing.
-
-Once the fix is applied, `labelme` should launch into the GUI:
-
-![LabelMe launched successfully](github_images/labelme3-launch-successful.png)
-
-### Step 0.D. Label your images
-
-In the LabelMe window, click **Open Dir** and select the `mos2/` folder so every image is loaded into the file list on the right.
-
-![Open the image folder in LabelMe](github_images/labelme4-open-image-folder.png)
-
-Images that already have a `.json` next to them show up with a check mark — clicking one re-loads the existing polygons so you can review or extend them.
-
-![Click on an already-labeled image](github_images/labelme5-click-on-labeled-images.png)
-
-For new defects, the fastest workflow is the built-in **AI Polygon** tool, which calls Segment Anything Model 2 (`sam2`) under the hood — click inside a void and SAM2 proposes a polygon you can accept or refine.
-
-![AI-assisted labeling with SAM2](github_images/labelme6-using-AI-labeling-SAM2.png)
-
-When the label-name dialog appears, **always use the same label name** (`defect`) so every void in every image maps to the same class. The training pipeline only recognises labels listed in `LABEL_MAP`.
-
-![Select the same label name for every defect](github_images/labelme7-select-same-label-name.png)
-
-Click **Save** (or `Ctrl+S`) after each image — LabelMe writes a `.json` file next to the `.png` with the polygon coordinates.
-
-![Save the labels](github_images/labelme8-save-the-labels.png)
-
-### Step 0.E. Re-package labels and upload to Colab
-
-After you've added or updated labels locally, re-zip the dataset folders into a new `image_data.zip` and replace the old one in your Colab session (drag-and-drop into `/content/`, or right-click → **Replace**). Then re-run **Setup of Google Colab → Step 0.J (unzip)** so Colab picks up your fresh `.json` files before Part 1.
-
-![Update image_data.zip on Colab after labeling](github_images/labelme9-update-zip-file-colab.png)
-
----
-
-If you'd rather skip Colab and run the tutorial on your own machine — for example because you have a Nvidia GPU, an Apple Silicon Mac (MPS), or just want to learn the local workflow — Please follow the instruction of the local setup at the bottom of this tutorial. 
-
-
 ## Setup of Google Colab
 
 Before you start, open [Google Colab](https://colab.research.google.com/) and create a new Jupyter notebook via `File → New notebook`.
@@ -328,9 +231,9 @@ Upload `image_data.zip` to the Colab session by opening the **Files** tab in the
 
 ![Upload the image dataset to Colab](github_images/colab-upload-image-dataset.png)
 
-Then run the three setup cells below to clean up any previous outputs, unzip the image dataset, and confirm that PyTorch can see your GPU. You will only need to run Step 0.I and Step 0.J once per session — Step 0.K is worth re-running any time you reconnect to a Colab runtime to make sure a GPU is still attached.
+Then run the three setup cells below to clean up any previous outputs, unzip the image dataset, and confirm that PyTorch can see your GPU. You will only need to run Step 0.A and Step 0.B once per session — Step 0.C is worth re-running any time you reconnect to a Colab runtime to make sure a GPU is still attached.
 
-### Step 0.I. Optional cleanup (skip on first run)
+### Step 0.A. Optional cleanup (skip on first run)
 
 Open your notebook and run the cell below to wipe any previous `mos2*` outputs under `/content/`. Leave it commented unless you really want a fresh start — on a local machine this would delete files permanently.
 
@@ -341,7 +244,7 @@ Open your notebook and run the cell below to wipe any previous `mos2*` outputs u
 ## Be careful with this command when running on your local machine! It will delete files permanently.
 ```
 
-### Step 0.J. Optional unzip (run once)
+### Step 0.B. Optional unzip (run once)
 
 Run this cell to extract the bundled `image_data.zip` into `/content/` so the dataset folders (`mos2`, `mos2_val_images_labeled`, `mos2_test_images_unlabeled`, …) appear at the expected paths. **Uncomment the line on the very first run, then comment it back out for subsequent runs of the entire notebook.** You may find this useful when you are trying to fine tune your models later on.
 
@@ -355,7 +258,7 @@ After the cell finishes, the dataset folders should show up in the **Files** sid
 
 ![Unzipped image dataset in the Colab Files sidebar](github_images/colab-unzip-image-dataset.png)
 
-### Step 0.K. Check PyTorch and GPU
+### Step 0.C. Check PyTorch and GPU
 
 Run this cell to confirm that PyTorch is installed and that an Nvidia GPU is attached. The output should print your PyTorch version, `Is CUDA available: True`, and the GPU device name (e.g. `Tesla T4`). If you see `Is CUDA available: False`, go back to **Runtime → Change runtime type → T4 GPU** in Colab and reconnect before continuing.
 
@@ -1584,6 +1487,181 @@ While training is running, hover over the **RAM / Disk** indicator in the top-ri
 
 ---
 
+# Part 4 — Install LabelMe (for hand labeling)
+
+Before training, the raw MoS₂ images need to be hand-labeled with polygon annotations around each defect. We use **LabelMe**, a free open-source labeling tool. The official install guide is at [labelme.io/docs/install-labelme-terminal](https://labelme.io/docs/install-labelme-terminal#install-uv-and-python). The recommended path uses `uv` (a fast Python package and version manager) so LabelMe runs in its own isolated environment without polluting your system Python.
+
+### Step 4.A. Install uv
+
+**macOS / Linux** — run in a terminal:
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+Then, restart the terminal
+
+**Windows** — run in PowerShell:
+
+```powershell
+powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+### Step 4.B. Install Python via uv
+
+```bash
+uv python install
+```
+
+This downloads a managed Python interpreter that LabelMe will use. You don't need a system-wide Python.
+
+### Step 4.C. Install and launch LabelMe
+
+```bash
+uv tool install labelme
+labelme
+```
+
+The first time you run `labelme`, you may see an error similar to the screenshot below — usually a missing system Qt dependency:
+
+![LabelMe launch error](github_images/labelme1-launch-error.png)
+
+This is the classic Qt **`xcb`** plugin error on WSL/Linux. The `xcb` plugin *is* found, but it can't initialize because a runtime library it depends on is missing (most often `libxcb-cursor0`, which became a hard requirement in Qt 6).
+
+If you're on WSL2 on Windows 11 (WSLg handles the GUI), here's how to fix it:
+
+**Step 1 — Install the missing xcb dependencies:**
+
+```bash
+sudo apt update
+sudo apt install -y libxcb-cursor0 libxcb-xinerama0 libxcb-icccm4 \
+  libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 \
+  libxcb-shape0 libxkbcommon-x11-0
+```
+
+In ~90% of cases, just `libxcb-cursor0` alone fixes it. Try `labelme` again after this.
+
+**Step 2 — If it still fails, get a real error message:**
+
+```bash
+QT_DEBUG_PLUGINS=1 labelme
+```
+
+This will dump the exact `.so` file it failed to load. Look for a line like `Cannot load library ... cannot open shared object file` — that tells you precisely which library is missing.
+
+Once the fix is applied, `labelme` should launch into the GUI:
+
+![LabelMe launched successfully](github_images/labelme3-launch-successful.png)
+
+### Step 4.D. Label your images
+
+In the LabelMe window, click **Open Dir** and select the `mos2/` folder so every image is loaded into the file list on the right.
+
+![Open the image folder in LabelMe](github_images/labelme4-open-image-folder.png)
+
+Images that already have a `.json` next to them show up with a check mark — clicking one re-loads the existing polygons so you can review or extend them.
+
+![Click on an already-labeled image](github_images/labelme5-click-on-labeled-images.png)
+
+For new defects, the fastest workflow is the built-in **AI Polygon** tool, which calls Segment Anything Model 2 (`sam2`) under the hood — click inside a void and SAM2 proposes a polygon you can accept or refine.
+
+![AI-assisted labeling with SAM2](github_images/labelme6-using-AI-labeling-SAM2.png)
+
+When the label-name dialog appears, **always use the same label name** (`defect`) so every void in every image maps to the same class. The training pipeline only recognises labels listed in `LABEL_MAP`.
+
+![Select the same label name for every defect](github_images/labelme7-select-same-label-name.png)
+
+Click **Save** (or `Ctrl+S`) after each image — LabelMe writes a `.json` file next to the `.png` with the polygon coordinates.
+
+![Save the labels](github_images/labelme8-save-the-labels.png)
+
+### Step 4.E. Re-package labels and upload to Colab
+
+After you've added or updated labels locally, re-zip the dataset folders into a new `image_data.zip` and replace the old one in your Colab session (drag-and-drop into `/content/`, or right-click → **Replace**). Then re-run **Setup of Google Colab → Step 0.B (unzip)** so Colab picks up your fresh `.json` files before Part 1.
+
+![Update image_data.zip on Colab after labeling](github_images/labelme9-update-zip-file-colab.png)
+
+---
+
+# Part 5 — Local Setup (if running on your own computer)
+
+If you'd rather skip Colab and run the tutorial on your own machine — for example because you have a Nvidia GPU, an Apple Silicon Mac (MPS), or just want to learn the local workflow — follow the steps below.
+
+Local Setup Begins:
+**You will create a new notebook from scratch in VS Code and copy each cell from this tutorial README.md as you go**, rather than downloading a finished `.ipynb`. This is intentional: typing the cells yourself is the fastest way to actually learn what each step does.
+
+> **GPU note** — training is *much* faster on a GPU. CUDA (Nvidia) and MPS (Apple Silicon) are both supported; CPU works but a single epoch can take 10–30× longer. If you don't have a GPU, prefer Colab.
+
+> **Windows + Nvidia GPU** — open a terminal and run `nvidia-smi` to check your installed CUDA version (shown in the top-right of the table). Match the PyTorch wheel in **Step 5.B** to that version (e.g. CUDA 12.6 → `whl/cu126`, CUDA 12.8 → `whl/cu128`). It is **often fine if your system CUDA is newer than the PyTorch CUDA build** — Nvidia drivers are backward-compatible, so a system showing CUDA 12.8 will happily run a `cu126` PyTorch wheel. Just don't go the other way (don't install a newer PyTorch CUDA than your driver supports).
+
+### Step 5.A. Install Miniconda and create a new environment
+
+Install **Miniconda** from [docs.anaconda.com/miniconda](https://docs.anaconda.com/miniconda/) (pick the installer that matches your OS). After install, open a fresh terminal — **Anaconda Prompt** on Windows, or any terminal on macOS/Linux — and create a dedicated environment for this tutorial:
+
+```bash
+conda create -n pytorch1 python=3.13 -y
+conda activate pytorch1
+```
+
+Keeping this work in its own environment avoids version conflicts with anything else you have installed.
+
+If you have a windows computer with a Nvidia GPU, type  `nvidia-smi` in the terminal to show the existing CUDA version. You might have to debug a bit if you could not find the GPU.
+
+![PyTorch install selector with CUDA 12.6](github_images/pytorch-cuda.png)
+
+### Step 5.B. Install PyTorch and dependencies
+
+PyTorch is now distributed primarily via **pip wheels** (the official install guide no longer lists conda commands), so we install PyTorch with `pip` *inside* the conda env. Use the selector at [pytorch.org/get-started/locally](https://pytorch.org/get-started/locally/) to generate the exact command for your OS / CUDA combination. Examples below use CUDA 12.8.
+
+**Nvidia GPU (CUDA 12.8):**
+
+```bash
+pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
+```
+
+**Apple Silicon (MPS) or CPU-only:**
+
+```bash
+pip3 install torch torchvision torchaudio
+```
+
+Then install the remaining packages used by the notebook (please try to debug using AI tools if missing other python packages):
+
+```bash
+pip3 install numpy pillow matplotlib scikit-learn tqdm jupyter ipykernel -y
+```
+
+For reference, here is the PyTorch install selector showing the CUDA 12.8 option used above:
+
+![PyTorch install selector with CUDA 12.8](github_images/torch-cuda128.png)
+
+### Step 5.C. Create a new notebook in VS Code and follow the tutorial
+
+1. Make a new working folder (e.g. `mse544-unet/`) and place the unzipped dataset folders (`mos2/`, `mos2_val_images_labeled/`, `mos2_test_images_unlabeled/`, `mos2_additional_training_labels/`) inside it.
+2. Open that folder in VS Code (`File → Open Folder…`).
+3. Create a new notebook: `File → New File…` → name it `UNet-<yourUWNetID>.ipynb`.
+4. Click the **kernel picker** in the top-right of the notebook and select **`(pytorch1)`** — the conda env you made in Step 5.A.
+5. Walk through this **README** from the top: for each numbered step in **Part 1 / Part 2 / Part 3**, add a markdown cell with the section heading + description, then a code cell with the python from the matching block, and run it. The code is identical to Colab; just skip the two `/content/` cells in **Setup of Google Colab → Step 0.A & Step 0.B** because your dataset is already in the working folder.
+6. Go to **Step 0.C (PyTorch + GPU check) of "Setup of Google Colab→"** and it should now print your own GPU (e.g. `RTX 4070`) on CUDA, `mps` on Apple Silicon, or fall back to `cpu`.
+
+Everything else — Part 1 dataset prep, Part 2 training, Part 3 inference — runs identically.
+
+---
+
+## References
+
+- Ronneberger, O., Fischer, P., & Brox, T. (2015). *U-Net: Convolutional Networks for Biomedical Image Segmentation*. MICCAI. [https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/](https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/)
+- Hong, J., Hu, Z., Probert, M., Li, K., Lv, D., Yang, X., Gu, L., Mao, N., Feng, Q., Xie, L., Zhang, J., Wu, D., Zhang, Z., Jin, C., Ji, W., Zhang, X., Yuan, J., & Zhang, Z. (2015). *Exploring atomic defects in molybdenum disulphide monolayers*. Nature Communications, 6(1), 6293. [https://doi.org/10.1038/ncomms7293](https://doi.org/10.1038/ncomms7293)
+- Wikipedia — Image segmentation — [https://en.wikipedia.org/wiki/Image_segmentation](https://en.wikipedia.org/wiki/Image_segmentation)
+- Towards Data Science — Intersection over Union (IoU) — [https://towardsdatascience.com/intersection-over-union-iou-calculation-for-evaluating-an-image-segmentation-model-8b22e2e84686/](https://towardsdatascience.com/intersection-over-union-iou-calculation-for-evaluating-an-image-segmentation-model-8b22e2e84686/)
+- LabelMe — [https://labelme.io/docs/install-labelme-terminal#install-uv-and-python](https://labelme.io/docs/install-labelme-terminal#install-uv-and-python)
+- Google Colab — [https://colab.research.google.com/](https://colab.research.google.com/)
+- Miniconda — [https://docs.anaconda.com/miniconda/](https://docs.anaconda.com/miniconda/)
+- PyTorch (install selector) — [https://pytorch.org/get-started/locally/](https://pytorch.org/get-started/locally/)
+- uv (Astral) — [https://astral.sh/uv](https://astral.sh/uv)
+
+---
+
 # Questions & Answering (8 × 10 pts = 80 pts)
 
 For each question below, copy the markdown block into a **new markdown cell** in your `.ipynb`, then write your answer in a second markdown cell directly below it.
@@ -1689,86 +1767,6 @@ Apply your improvement plan from Q8 (modify code, label more images, tune hyperp
 ![Bonus screenshot using LabelMe](github_images/bonus-screenshot-using-labelme.png)
 
 (The End)
-
----
-
-
-## Local Setup (if running on your own computer)
-
-If you'd rather skip Colab and run the tutorial on your own machine — for example because you have a Nvidia GPU, an Apple Silicon Mac (MPS), or just want to learn the local workflow — follow the steps below.
-
-Local Setup Begins:
-**You will create a new notebook from scratch in VS Code and copy each cell from this tutorial README.md as you go**, rather than downloading a finished `.ipynb`. This is intentional: typing the cells yourself is the fastest way to actually learn what each step does.
-
-> **GPU note** — training is *much* faster on a GPU. CUDA (Nvidia) and MPS (Apple Silicon) are both supported; CPU works but a single epoch can take 10–30× longer. If you don't have a GPU, prefer Colab.
-
-> **Windows + Nvidia GPU** — open a terminal and run `nvidia-smi` to check your installed CUDA version (shown in the top-right of the table). Match the PyTorch wheel in **Step B** to that version (e.g. CUDA 12.6 → `whl/cu126`, CUDA 12.8 → `whl/cu128`). It is **often fine if your system CUDA is newer than the PyTorch CUDA build** — Nvidia drivers are backward-compatible, so a system showing CUDA 12.8 will happily run a `cu126` PyTorch wheel. Just don't go the other way (don't install a newer PyTorch CUDA than your driver supports).
-
-### Step 0.F. Install Miniconda and create a new environment
-
-Install **Miniconda** from [docs.anaconda.com/miniconda](https://docs.anaconda.com/miniconda/) (pick the installer that matches your OS). After install, open a fresh terminal — **Anaconda Prompt** on Windows, or any terminal on macOS/Linux — and create a dedicated environment for this tutorial:
-
-```bash
-conda create -n pytorch1 python=3.13 -y
-conda activate pytorch1
-```
-
-Keeping this work in its own environment avoids version conflicts with anything else you have installed.
-
-If you have a windows computer with a Nvidia GPU, type  `nvidia-smi` in the terminal to show the existing CUDA version. You might have to debug a bit if you could not find the GPU.
-
-![PyTorch install selector with CUDA 12.6](github_images/pytorch-cuda.png)
-
-### Step 0.G. Install PyTorch and dependencies
-
-PyTorch is now distributed primarily via **pip wheels** (the official install guide no longer lists conda commands), so we install PyTorch with `pip` *inside* the conda env. Use the selector at [pytorch.org/get-started/locally](https://pytorch.org/get-started/locally/) to generate the exact command for your OS / CUDA combination. Examples below use CUDA 12.8.
-
-**Nvidia GPU (CUDA 12.8):**
-
-```bash
-pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
-```
-
-**Apple Silicon (MPS) or CPU-only:**
-
-```bash
-pip3 install torch torchvision torchaudio
-```
-
-Then install the remaining packages used by the notebook (please try to debug using AI tools if missing other python packages):
-
-```bash
-pip3 install numpy pillow matplotlib scikit-learn tqdm jupyter ipykernel -y
-```
-
-For reference, here is the PyTorch install selector showing the CUDA 12.8 option used above:
-
-![PyTorch install selector with CUDA 12.8](github_images/torch-cuda128.png)
-
-### Step 0.H. Create a new notebook in VS Code and follow the tutorial
-
-1. Make a new working folder (e.g. `mse544-unet/`) and place the unzipped dataset folders (`mos2/`, `mos2_val_images_labeled/`, `mos2_test_images_unlabeled/`, `mos2_additional_training_labels/`) inside it.
-2. Open that folder in VS Code (`File → Open Folder…`).
-3. Create a new notebook: `File → New File…` → name it `UNet-<yourUWNetID>.ipynb`.
-4. Click the **kernel picker** in the top-right of the notebook and select **`(pytorch1)`** — the conda env you made in Step 0.F.
-5. Walk through this **README** from the top: for each numbered step in **Part 1 / Part 2 / Part 3**, add a markdown cell with the section heading + description, then a code cell with the python from the matching block, and run it. The code is identical to Colab; just skip the two `/content/` cells in **Setup of Google Colab → Step 0.I & Step 0.J** because your dataset is already in the working folder.
-6. Go to **Step 0.K (PyTorch + GPU check) of "Setup of Google Colab→"** and it should now print your own GPU (e.g. `RTX 4070`) on CUDA, `mps` on Apple Silicon, or fall back to `cpu`.
-
-Everything else — Part 1 dataset prep, Part 2 training, Part 3 inference — runs identically.
-
----
-
-## References
-
-- Ronneberger, O., Fischer, P., & Brox, T. (2015). *U-Net: Convolutional Networks for Biomedical Image Segmentation*. MICCAI. [https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/](https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/)
-- Hong, J., Hu, Z., Probert, M., Li, K., Lv, D., Yang, X., Gu, L., Mao, N., Feng, Q., Xie, L., Zhang, J., Wu, D., Zhang, Z., Jin, C., Ji, W., Zhang, X., Yuan, J., & Zhang, Z. (2015). *Exploring atomic defects in molybdenum disulphide monolayers*. Nature Communications, 6(1), 6293. [https://doi.org/10.1038/ncomms7293](https://doi.org/10.1038/ncomms7293)
-- Wikipedia — Image segmentation — [https://en.wikipedia.org/wiki/Image_segmentation](https://en.wikipedia.org/wiki/Image_segmentation)
-- Towards Data Science — Intersection over Union (IoU) — [https://towardsdatascience.com/intersection-over-union-iou-calculation-for-evaluating-an-image-segmentation-model-8b22e2e84686/](https://towardsdatascience.com/intersection-over-union-iou-calculation-for-evaluating-an-image-segmentation-model-8b22e2e84686/)
-- LabelMe — [https://labelme.io/docs/install-labelme-terminal#install-uv-and-python](https://labelme.io/docs/install-labelme-terminal#install-uv-and-python)
-- Google Colab — [https://colab.research.google.com/](https://colab.research.google.com/)
-- Miniconda — [https://docs.anaconda.com/miniconda/](https://docs.anaconda.com/miniconda/)
-- PyTorch (install selector) — [https://pytorch.org/get-started/locally/](https://pytorch.org/get-started/locally/)
-- uv (Astral) — [https://astral.sh/uv](https://astral.sh/uv)
 
 ---
 
