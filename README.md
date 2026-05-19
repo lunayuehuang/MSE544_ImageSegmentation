@@ -83,23 +83,23 @@ You might have no idea about any of these comparisons at this moment, but soon y
 
 [Install LabelMe (for hand labeling)](#install-labelme-for-hand-labeling)
 
-- [Step A. Install uv](#step-a-install-uv)
-- [Step B. Install Python via uv](#step-b-install-python-via-uv)
-- [Step C. Install and launch LabelMe](#step-c-install-and-launch-labelme)
-- [Step D. Label your images](#step-d-label-your-images)
-- [Step E. Re-package labels and upload to Colab](#step-e-re-package-labels-and-upload-to-colab)
+- [Step 0.A. Install uv](#step-0a-install-uv)
+- [Step 0.B. Install Python via uv](#step-0b-install-python-via-uv)
+- [Step 0.C. Install and launch LabelMe](#step-0c-install-and-launch-labelme)
+- [Step 0.D. Label your images](#step-0d-label-your-images)
+- [Step 0.E. Re-package labels and upload to Colab](#step-0e-re-package-labels-and-upload-to-colab)
 
 [Local Setup (if running on your own computer)](#local-setup-if-running-on-your-own-computer)
 
-- [Step A. Install Miniconda and create a new environment](#step-a-install-miniconda-and-create-a-new-environment)
-- [Step B. Install PyTorch and dependencies](#step-b-install-pytorch-and-dependencies)
-- [Step C. Create a new notebook in VS Code and follow the tutorial](#step-c-create-a-new-notebook-in-vs-code-and-follow-the-tutorial)
+- [Step 0.F. Install Miniconda and create a new environment](#step-0f-install-miniconda-and-create-a-new-environment)
+- [Step 0.G. Install PyTorch and dependencies](#step-0g-install-pytorch-and-dependencies)
+- [Step 0.H. Create a new notebook in VS Code and follow the tutorial](#step-0h-create-a-new-notebook-in-vs-code-and-follow-the-tutorial)
 
 [Setup of Google Colab](#setup-of-google-colab)
 
-- [Step A. Optional cleanup (skip on first run)](#step-a-optional-cleanup-skip-on-first-run)
-- [Step B. Optional unzip (run once)](#step-b-optional-unzip-run-once)
-- [Step C. Check PyTorch and GPU](#step-c-check-pytorch-and-gpu)
+- [Step 0.I. Optional cleanup (skip on first run)](#step-0i-optional-cleanup-skip-on-first-run)
+- [Step 0.J. Optional unzip (run once)](#step-0j-optional-unzip-run-once)
+- [Step 0.K. Check PyTorch and GPU](#step-0k-check-pytorch-and-gpu)
 
 [Part 1 — Dataset Preparation](#part-1--dataset-preparation)
 
@@ -231,7 +231,7 @@ An example is given below:
 
 Before training, the raw MoS₂ images need to be hand-labeled with polygon annotations around each defect. We use **LabelMe**, a free open-source labeling tool. The official install guide is at [labelme.io/docs/install-labelme-terminal](https://labelme.io/docs/install-labelme-terminal#install-uv-and-python). The recommended path uses `uv` (a fast Python package and version manager) so LabelMe runs in its own isolated environment without polluting your system Python.
 
-### Step A. Install uv
+### Step 0.A. Install uv
 
 **macOS / Linux** — run in a terminal:
 
@@ -247,7 +247,7 @@ Then, restart the terminal
 powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-### Step B. Install Python via uv
+### Step 0.B. Install Python via uv
 
 ```bash
 uv python install
@@ -255,7 +255,7 @@ uv python install
 
 This downloads a managed Python interpreter that LabelMe will use. You don't need a system-wide Python.
 
-### Step C. Install and launch LabelMe
+### Step 0.C. Install and launch LabelMe
 
 ```bash
 uv tool install labelme
@@ -293,7 +293,7 @@ Once the fix is applied, `labelme` should launch into the GUI:
 
 ![LabelMe launched successfully](github_images/labelme3-launch-successful.png)
 
-### Step D. Label your images
+### Step 0.D. Label your images
 
 In the LabelMe window, click **Open Dir** and select the `mos2/` folder so every image is loaded into the file list on the right.
 
@@ -315,9 +315,9 @@ Click **Save** (or `Ctrl+S`) after each image — LabelMe writes a `.json` file 
 
 ![Save the labels](github_images/labelme8-save-the-labels.png)
 
-### Step E. Re-package labels and upload to Colab
+### Step 0.E. Re-package labels and upload to Colab
 
-After you've added or updated labels locally, re-zip the dataset folders into a new `image_data.zip` and replace the old one in your Colab session (drag-and-drop into `/content/`, or right-click → **Replace**). Then re-run **Setup of Google Colab → Step B (unzip)** so Colab picks up your fresh `.json` files before Part 1.
+After you've added or updated labels locally, re-zip the dataset folders into a new `image_data.zip` and replace the old one in your Colab session (drag-and-drop into `/content/`, or right-click → **Replace**). Then re-run **Setup of Google Colab → Step 0.J (unzip)** so Colab picks up your fresh `.json` files before Part 1.
 
 ![Update image_data.zip on Colab after labeling](github_images/labelme9-update-zip-file-colab.png)
 
@@ -344,9 +344,9 @@ Upload `image_data.zip` to the Colab session by opening the **Files** tab in the
 
 ![Upload the image dataset to Colab](github_images/colab-upload-image-dataset.png)
 
-Then run the three setup cells below to clean up any previous outputs, unzip the image dataset, and confirm that PyTorch can see your GPU. You will only need to run Step A and Step B once per session — Step C is worth re-running any time you reconnect to a Colab runtime to make sure a GPU is still attached.
+Then run the three setup cells below to clean up any previous outputs, unzip the image dataset, and confirm that PyTorch can see your GPU. You will only need to run Step 0.I and Step 0.J once per session — Step 0.K is worth re-running any time you reconnect to a Colab runtime to make sure a GPU is still attached.
 
-### Step A. Optional cleanup (skip on first run)
+### Step 0.I. Optional cleanup (skip on first run)
 
 Open your notebook and run the cell below to wipe any previous `mos2*` outputs under `/content/`. Leave it commented unless you really want a fresh start — on a local machine this would delete files permanently.
 
@@ -357,7 +357,7 @@ Open your notebook and run the cell below to wipe any previous `mos2*` outputs u
 ## Be careful with this command when running on your local machine! It will delete files permanently.
 ```
 
-### Step B. Optional unzip (run once)
+### Step 0.J. Optional unzip (run once)
 
 Run this cell to extract the bundled `image_data.zip` into `/content/` so the dataset folders (`mos2`, `mos2_val_images_labeled`, `mos2_test_images_unlabeled`, …) appear at the expected paths. **Uncomment the line on the very first run, then comment it back out for subsequent runs of the entire notebook.** You may find this useful when you are trying to fine tune your models later on.
 
@@ -371,7 +371,7 @@ After the cell finishes, the dataset folders should show up in the **Files** sid
 
 ![Unzipped image dataset in the Colab Files sidebar](github_images/colab-unzip-image-dataset.png)
 
-### Step C. Check PyTorch and GPU
+### Step 0.K. Check PyTorch and GPU
 
 Run this cell to confirm that PyTorch is installed and that an Nvidia GPU is attached. The output should print your PyTorch version, `Is CUDA available: True`, and the GPU device name (e.g. `Tesla T4`). If you see `Is CUDA available: False`, go back to **Runtime → Change runtime type → T4 GPU** in Colab and reconnect before continuing.
 
@@ -1720,7 +1720,7 @@ Local Setup Begins:
 
 > **Windows + Nvidia GPU** — open a terminal and run `nvidia-smi` to check your installed CUDA version (shown in the top-right of the table). Match the PyTorch wheel in **Step B** to that version (e.g. CUDA 12.6 → `whl/cu126`, CUDA 12.8 → `whl/cu128`). It is **often fine if your system CUDA is newer than the PyTorch CUDA build** — Nvidia drivers are backward-compatible, so a system showing CUDA 12.8 will happily run a `cu126` PyTorch wheel. Just don't go the other way (don't install a newer PyTorch CUDA than your driver supports).
 
-### Step A. Install Miniconda and create a new environment
+### Step 0.F. Install Miniconda and create a new environment
 
 Install **Miniconda** from [docs.anaconda.com/miniconda](https://docs.anaconda.com/miniconda/) (pick the installer that matches your OS). After install, open a fresh terminal — **Anaconda Prompt** on Windows, or any terminal on macOS/Linux — and create a dedicated environment for this tutorial:
 
@@ -1735,7 +1735,7 @@ If you have a windows computer with a Nvidia GPU, type  `nvidia-smi` in the term
 
 ![PyTorch install selector with CUDA 12.6](github_images/pytorch-cuda.png)
 
-### Step B. Install PyTorch and dependencies
+### Step 0.G. Install PyTorch and dependencies
 
 PyTorch is now distributed primarily via **pip wheels** (the official install guide no longer lists conda commands), so we install PyTorch with `pip` *inside* the conda env. Use the selector at [pytorch.org/get-started/locally](https://pytorch.org/get-started/locally/) to generate the exact command for your OS / CUDA combination. Examples below use CUDA 12.8.
 
@@ -1761,14 +1761,14 @@ For reference, here is the PyTorch install selector showing the CUDA 12.8 option
 
 ![PyTorch install selector with CUDA 12.8](github_images/torch-cuda128.png)
 
-### Step C. Create a new notebook in VS Code and follow the tutorial
+### Step 0.H. Create a new notebook in VS Code and follow the tutorial
 
 1. Make a new working folder (e.g. `mse544-unet/`) and place the unzipped dataset folders (`mos2/`, `mos2_val_images_labeled/`, `mos2_test_images_unlabeled/`, `mos2_additional_training_labels/`) inside it.
 2. Open that folder in VS Code (`File → Open Folder…`).
 3. Create a new notebook: `File → New File…` → name it `UNet-<yourUWNetID>.ipynb`.
-4. Click the **kernel picker** in the top-right of the notebook and select **`(pytorch1)`** — the conda env you made in Step A.
-5. Walk through this **README** from the top: for each numbered step in **Part 1 / Part 2 / Part 3**, add a markdown cell with the section heading + description, then a code cell with the python from the matching block, and run it. The code is identical to Colab; just skip the two `/content/` cells in **Setup of Google Colab → Step A & Step B** because your dataset is already in the working folder.
-6. Go to **Step C (PyTorch + GPU check) of "Setup of Google Colab→"** and it should now print your own GPU (e.g. `RTX 4070`) on CUDA, `mps` on Apple Silicon, or fall back to `cpu`.
+4. Click the **kernel picker** in the top-right of the notebook and select **`(pytorch1)`** — the conda env you made in Step 0.F.
+5. Walk through this **README** from the top: for each numbered step in **Part 1 / Part 2 / Part 3**, add a markdown cell with the section heading + description, then a code cell with the python from the matching block, and run it. The code is identical to Colab; just skip the two `/content/` cells in **Setup of Google Colab → Step 0.I & Step 0.J** because your dataset is already in the working folder.
+6. Go to **Step 0.K (PyTorch + GPU check) of "Setup of Google Colab→"** and it should now print your own GPU (e.g. `RTX 4070`) on CUDA, `mps` on Apple Silicon, or fall back to `cpu`.
 
 Everything else — Part 1 dataset prep, Part 2 training, Part 3 inference — runs identically.
 
