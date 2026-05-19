@@ -6,36 +6,9 @@
 
 This is a tutorial prepared for the University of Washington **MSE544 — Computer Vision in Materials Science** hands-on class. In this tutorial, students will learn the fundamentals of image segmentation and the U-Net architecture; how to build a complete defect-segmentation pipeline from raw STEM images of MoS₂ — including labeling with LabelMe, dataset preparation, U-Net training on a free Nvidia T4 GPU on Google Colab, and inference on unlabeled test images; and how to iteratively improve segmentation performance through augmentation, loss design, hyperparameter tuning, and additional labeling (= adding more training data). Potential applications using this U-Net segmentation model on this MoS2 dataset are also discussed.
 
-**Before you start**, please download the **image_data.zip** from the Canvas page. After unzipping in a project folder, your folder content should look like this:
+**Before you start**, please download the **image_data.zip** from the Canvas page. 
+(You don't need to unzip it locally if you want to directly upload to Google Coblab for a first trial-run.)
 
-```text
-├── image_data.zip
-├── mos2
-│   ├── 14.png
-│   ├── 15.png
-│   ├── 17.png
-│   ├── 18.json
-│   ├── 18.png
-│   ├── 19.json
-│   ├── 19.png
-│   ├── 21.png
-│   ├── 22.png
-│   ├── 23.json
-│   ├── 23.png
-│   ├── 26.json
-│   ├── 26.png
-│   ├── 28.json
-│   └── 28.png
-├── mos2_additional_training_labels
-│   ├── 21.json
-│   └── 22.json
-├── mos2_test_images_unlabeled
-│   ├── 10.png
-│   ├── 11.png
-│   ├── 12.png
-
-    (*more data below)
-```
 
 ## From Tabular Data to Image Data
 
