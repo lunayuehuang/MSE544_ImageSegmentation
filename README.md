@@ -33,24 +33,8 @@ This is a tutorial prepared for the University of Washington **MSE544 — Comput
 │   ├── 10.png
 │   ├── 11.png
 │   ├── 12.png
-│   ├── 16.png
-│   ├── 2.png
-│   ├── 20.png
-│   ├── 24.png
-│   ├── 3.png
-│   ├── 4.png
-│   ├── 5.png
-│   ├── 6.png
-│   ├── 7.png
-│   ├── 8.png
-│   └── 9.png
-└── mos2_val_images_labeled
-    ├── 13.json
-    ├── 13.png
-    ├── 25.json
-    ├── 25.png
-    ├── 27.json
-    └── 27.png
+
+    (*more data below)
 ```
 
 ## From Tabular Data to Image Data
