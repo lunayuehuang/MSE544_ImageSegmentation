@@ -1618,7 +1618,7 @@ When the label-name dialog appears, **always use the same label name** (`defect`
 
 ![Select the same label name for every defect](github_images/labelme7-select-same-label-name.png)
 
-Type enter on your keyboard to confirm the polygon, and then pick/type the label name `defect`.
+Type **Enter** on your keyboard to confirm the polygon, and then pick/type the label name `defect`.
 
 ![Pick the label name](github_images/labelme7b-pick-label-name.png)
 
