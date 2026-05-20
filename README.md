@@ -12,7 +12,7 @@ This is a tutorial prepared for the University of Washington **MSE544 — Comput
 
 ## From Tabular Data to Image Data
 
-In week3 of this quarter, we introduced the CatBoost for numerical regression and feature importance analysis using tabular data. This time, we are exploring how to use deep neural networks (e.g. U-Net) in image learning tasks.
+In week3 of this quarter, we introduced the CatBoost for numerical regression, and feature importance analysis using tabular data. This time, we are exploring how to use deep neural networks (e.g. U-Net) in image learning tasks.
 
 Image data breaks the assumptions you're used to from tabular ML, and almost every design choice in this notebook (U-Net, Dice loss, class weights, augmentation) traces back to one of three differences:
 
@@ -24,7 +24,7 @@ You might have no idea about any of these comparisons at this moment, but soon y
 
 ## Data & Code Sharing Policy
 
-> **The MoS₂ image dataset provided by Professor Juan C. Idrobo and this tutorial code (notebook, github_images, README.md) are made available for the sole use of students enrolled in MSE 544.** You may **NOT** redistribute, repost, publish, or share the dataset or code — in whole or in part, in any form (including public GitHub repositories, personal websites, blog posts, presentations outside of class, or third-party AI/ML platforms) — without **prior written approval from the instruction team**. If you'd like to use any of this material outside of the course, please contact our instructors first.
+> **The MoS₂ image dataset provided by Professor Juan C. Idrobo and this tutorial code (notebook, github_images, README.md) are made available for the sole use of students enrolled in MSE 544.** You may **NOT** redistribute, repost, publish, or share the dataset or code — in whole or in part, in any form (including public GitHub repositories, personal websites, blog posts, presentations outside of class, or third-party AI/ML platforms) — without **prior written approval from the instruction team**. If you'd like to use any of this material outside of the course, please contact Professor Luna Huang first.
 
 ## Table of Contents
 
@@ -77,25 +77,25 @@ You might have no idea about any of these comparisons at this moment, but soon y
 - [Step 3.D. Prediction helpers](#step-3d-prediction-helpers)
 - [Step 3.E. Run predictions on unlabeled images #2–12](#step-3e-run-predictions-on-unlabeled-images-212)
 
-[Part 4 — Install LabelMe (for hand labeling)](#part-4--install-labelme-for-hand-labeling)
+[Part 4 — Local Setup (if running on your own computer)](#part-4--local-setup-if-running-on-your-own-computer)
 
-- [Step 4.A. Install uv](#step-4a-install-uv)
-- [Step 4.B. Install Python via uv](#step-4b-install-python-via-uv)
-- [Step 4.C. Install and launch LabelMe](#step-4c-install-and-launch-labelme)
-- [Step 4.D. Label your images](#step-4d-label-your-images)
-- [Step 4.E. Re-package labels and upload to Colab](#step-4e-re-package-labels-and-upload-to-colab)
+- [Step 4.A. Install Miniconda and create a new environment](#step-4a-install-miniconda-and-create-a-new-environment)
+- [Step 4.B. Install PyTorch and dependencies](#step-4b-install-pytorch-and-dependencies)
+- [Step 4.C. Create a new notebook in VS Code and follow the tutorial](#step-4c-create-a-new-notebook-in-vs-code-and-follow-the-tutorial)
 
-[Part 5 — Local Setup (if running on your own computer)](#part-5--local-setup-if-running-on-your-own-computer)
+[Part 5 — Install LabelMe (for hand labeling)](#part-5--install-labelme-for-hand-labeling)
 
-- [Step 5.A. Install Miniconda and create a new environment](#step-5a-install-miniconda-and-create-a-new-environment)
-- [Step 5.B. Install PyTorch and dependencies](#step-5b-install-pytorch-and-dependencies)
-- [Step 5.C. Create a new notebook in VS Code and follow the tutorial](#step-5c-create-a-new-notebook-in-vs-code-and-follow-the-tutorial)
+- [Step 5.A. Install uv](#step-5a-install-uv)
+- [Step 5.B. Install Python via uv](#step-5b-install-python-via-uv)
+- [Step 5.C. Install and launch LabelMe](#step-5c-install-and-launch-labelme)
+- [Step 5.D. Label your images](#step-5d-label-your-images)
+- [Step 5.E. Re-package labels and upload to Colab](#step-5e-re-package-labels-and-upload-to-colab)
 
 [References](#references)
 
 [Disclaimer](#disclaimer)
 
-[Questions &amp; Answering](#questions--answering-8--10-pts--80-pts)
+[Submission Requirements](#submission-baseline-100)
 
 ## Learning Objectives
 
@@ -1460,11 +1460,76 @@ While training is running, hover over the **RAM / Disk** indicator in the top-ri
 
 ---
 
-# Part 4 — Install LabelMe (for hand labeling)
+# Part 4 — Local Setup (if running on your own computer)
+
+If you'd rather skip Colab and run the tutorial on your own machine — for example because you have a Nvidia GPU, an Apple Silicon Mac (MPS), or just want to learn the local workflow — follow the steps below.
+
+Local Setup Begins:
+**You will create a new notebook from scratch in VS Code and copy each cell from this tutorial README.md as you go**, rather than downloading a finished `.ipynb`. This is intentional: typing the cells yourself is the fastest way to actually learn what each step does.
+
+> **GPU note** — training is *much* faster on a GPU. CUDA (Nvidia) and MPS (Apple Silicon) are both supported; CPU works but a single epoch can take 10–30× longer. If you don't have a GPU, prefer Colab.
+
+> **Windows + Nvidia GPU** — open a terminal and run `nvidia-smi` to check your installed CUDA version (shown in the top-right of the table). Match the PyTorch wheel in **Step 4.B** to that version (e.g. CUDA 12.6 → `whl/cu126`, CUDA 12.8 → `whl/cu128`). It is **often fine if your system CUDA is newer than the PyTorch CUDA build** — Nvidia drivers are backward-compatible, so a system showing CUDA 12.8 will happily run a `cu126` PyTorch wheel. Just don't go the other way (don't install a newer PyTorch CUDA than your driver supports).
+
+### Step 4.A. Install Miniconda and create a new environment
+
+Install **Miniconda** from [docs.anaconda.com/miniconda](https://docs.anaconda.com/miniconda/) (pick the installer that matches your OS). After install, open a fresh terminal — **Anaconda Prompt** on Windows, or any terminal on macOS/Linux — and create a dedicated environment for this tutorial:
+
+```bash
+conda create -n pytorch1 python=3.13 -y
+conda activate pytorch1
+```
+
+Keeping this work in its own environment avoids version conflicts with anything else you have installed.
+
+If you have a windows computer with a Nvidia GPU, type  `nvidia-smi` in the terminal to show the existing CUDA version. You might have to debug a bit if you could not find the GPU.
+
+![PyTorch install selector with CUDA 12.6](github_images/pytorch-cuda.png)
+
+### Step 4.B. Install PyTorch and dependencies
+
+PyTorch is now distributed primarily via **pip wheels** (the official install guide no longer lists conda commands), so we install PyTorch with `pip` *inside* the conda env. Use the selector at [pytorch.org/get-started/locally](https://pytorch.org/get-started/locally/) to generate the exact command for your OS / CUDA combination. Examples below use CUDA 12.8.
+
+**Nvidia GPU (CUDA 12.8):**
+
+```bash
+pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
+```
+
+**Apple Silicon (MPS) or CPU-only:**
+
+```bash
+pip3 install torch torchvision torchaudio
+```
+
+Then install the remaining packages used by the notebook (please try to debug using AI tools if missing other python packages):
+
+```bash
+pip3 install numpy pillow matplotlib scikit-learn tqdm jupyter ipykernel -y
+```
+
+For reference, here is the PyTorch install selector showing the CUDA 12.8 option used above:
+
+![PyTorch install selector with CUDA 12.8](github_images/torch-cuda128.png)
+
+### Step 4.C. Create a new notebook in VS Code and follow the tutorial
+
+1. Make a new working folder (e.g. `mse544-unet/`) and place the unzipped dataset folders (`mos2/`, `mos2_val_images_labeled/`, `mos2_test_images_unlabeled/`, `mos2_additional_training_labels/`) inside it.
+2. Open that folder in VS Code (`File → Open Folder…`).
+3. Create a new notebook: `File → New File…` → name it `UNet-<yourUWNetID>.ipynb`.
+4. Click the **kernel picker** in the top-right of the notebook and select **`(pytorch1)`** — the conda env you made in Step 4.A.
+5. Walk through this **README** from the top: for each numbered step in **Part 1 / Part 2 / Part 3**, add a markdown cell with the section heading + description, then a code cell with the python from the matching block, and run it. The code is identical to Colab; just skip the two `/content/` cells in **Part 0 — Setup of Google Colab → Step 0.A & Step 0.B** because your dataset is already in the working folder.
+6. Go to **Step 0.C (PyTorch + GPU check) of "Part 0 — Setup of Google Colab→"** and it should now print your own GPU (e.g. `RTX 4070`) on CUDA, `mps` on Apple Silicon, or fall back to `cpu`.
+
+Everything else — Part 1 dataset prep, Part 2 training, Part 3 inference — runs identically.
+
+---
+
+# Part 5 — Install LabelMe (for hand labeling)
 
 Before training, the raw MoS₂ images need to be hand-labeled with polygon annotations around each defect. We use **LabelMe**, a free open-source labeling tool. The official install guide is at [labelme.io/docs/install-labelme-terminal](https://labelme.io/docs/install-labelme-terminal#install-uv-and-python). The recommended path uses `uv` (a fast Python package and version manager) so LabelMe runs in its own isolated environment without polluting your system Python.
 
-### Step 4.A. Install uv
+### Step 5.A. Install uv
 
 **macOS / Linux** — run in a terminal:
 
@@ -1480,7 +1545,7 @@ Then, restart the terminal
 powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-### Step 4.B. Install Python via uv
+### Step 5.B. Install Python via uv
 
 ```bash
 uv python install
@@ -1488,7 +1553,7 @@ uv python install
 
 This downloads a managed Python interpreter that LabelMe will use. You don't need a system-wide Python.
 
-### Step 4.C. Install and launch LabelMe
+### Step 5.C. Install and launch LabelMe
 
 ```bash
 uv tool install labelme
@@ -1526,7 +1591,7 @@ Once the fix is applied, `labelme` should launch into the GUI:
 
 ![LabelMe launched successfully](github_images/labelme3-launch-successful.png)
 
-### Step 4.D. Label your images
+### Step 5.D. Label your images
 
 In the LabelMe window, click **Open Dir** and select the `mos2/` folder so every image is loaded into the file list on the right.
 
@@ -1548,76 +1613,11 @@ Click **Save** (or `Ctrl+S`) after each image — LabelMe writes a `.json` file 
 
 ![Save the labels](github_images/labelme8-save-the-labels.png)
 
-### Step 4.E. Re-package labels and upload to Colab
+### Step 5.E. Re-package labels and upload to Colab
 
 After you've added or updated labels locally, re-zip the dataset folders into a new `image_data.zip` and replace the old one in your Colab session (drag-and-drop into `/content/`, or right-click → **Replace**). Then re-run **Part 0 — Setup of Google Colab → Step 0.B (unzip)** so Colab picks up your fresh `.json` files before Part 1.
 
 ![Update image_data.zip on Colab after labeling](github_images/labelme9-update-zip-file-colab.png)
-
----
-
-# Part 5 — Local Setup (if running on your own computer)
-
-If you'd rather skip Colab and run the tutorial on your own machine — for example because you have a Nvidia GPU, an Apple Silicon Mac (MPS), or just want to learn the local workflow — follow the steps below.
-
-Local Setup Begins:
-**You will create a new notebook from scratch in VS Code and copy each cell from this tutorial README.md as you go**, rather than downloading a finished `.ipynb`. This is intentional: typing the cells yourself is the fastest way to actually learn what each step does.
-
-> **GPU note** — training is *much* faster on a GPU. CUDA (Nvidia) and MPS (Apple Silicon) are both supported; CPU works but a single epoch can take 10–30× longer. If you don't have a GPU, prefer Colab.
-
-> **Windows + Nvidia GPU** — open a terminal and run `nvidia-smi` to check your installed CUDA version (shown in the top-right of the table). Match the PyTorch wheel in **Step 5.B** to that version (e.g. CUDA 12.6 → `whl/cu126`, CUDA 12.8 → `whl/cu128`). It is **often fine if your system CUDA is newer than the PyTorch CUDA build** — Nvidia drivers are backward-compatible, so a system showing CUDA 12.8 will happily run a `cu126` PyTorch wheel. Just don't go the other way (don't install a newer PyTorch CUDA than your driver supports).
-
-### Step 5.A. Install Miniconda and create a new environment
-
-Install **Miniconda** from [docs.anaconda.com/miniconda](https://docs.anaconda.com/miniconda/) (pick the installer that matches your OS). After install, open a fresh terminal — **Anaconda Prompt** on Windows, or any terminal on macOS/Linux — and create a dedicated environment for this tutorial:
-
-```bash
-conda create -n pytorch1 python=3.13 -y
-conda activate pytorch1
-```
-
-Keeping this work in its own environment avoids version conflicts with anything else you have installed.
-
-If you have a windows computer with a Nvidia GPU, type  `nvidia-smi` in the terminal to show the existing CUDA version. You might have to debug a bit if you could not find the GPU.
-
-![PyTorch install selector with CUDA 12.6](github_images/pytorch-cuda.png)
-
-### Step 5.B. Install PyTorch and dependencies
-
-PyTorch is now distributed primarily via **pip wheels** (the official install guide no longer lists conda commands), so we install PyTorch with `pip` *inside* the conda env. Use the selector at [pytorch.org/get-started/locally](https://pytorch.org/get-started/locally/) to generate the exact command for your OS / CUDA combination. Examples below use CUDA 12.8.
-
-**Nvidia GPU (CUDA 12.8):**
-
-```bash
-pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
-```
-
-**Apple Silicon (MPS) or CPU-only:**
-
-```bash
-pip3 install torch torchvision torchaudio
-```
-
-Then install the remaining packages used by the notebook (please try to debug using AI tools if missing other python packages):
-
-```bash
-pip3 install numpy pillow matplotlib scikit-learn tqdm jupyter ipykernel -y
-```
-
-For reference, here is the PyTorch install selector showing the CUDA 12.8 option used above:
-
-![PyTorch install selector with CUDA 12.8](github_images/torch-cuda128.png)
-
-### Step 5.C. Create a new notebook in VS Code and follow the tutorial
-
-1. Make a new working folder (e.g. `mse544-unet/`) and place the unzipped dataset folders (`mos2/`, `mos2_val_images_labeled/`, `mos2_test_images_unlabeled/`, `mos2_additional_training_labels/`) inside it.
-2. Open that folder in VS Code (`File → Open Folder…`).
-3. Create a new notebook: `File → New File…` → name it `UNet-<yourUWNetID>.ipynb`.
-4. Click the **kernel picker** in the top-right of the notebook and select **`(pytorch1)`** — the conda env you made in Step 5.A.
-5. Walk through this **README** from the top: for each numbered step in **Part 1 / Part 2 / Part 3**, add a markdown cell with the section heading + description, then a code cell with the python from the matching block, and run it. The code is identical to Colab; just skip the two `/content/` cells in **Part 0 — Setup of Google Colab → Step 0.A & Step 0.B** because your dataset is already in the working folder.
-6. Go to **Step 0.C (PyTorch + GPU check) of "Part 0 — Setup of Google Colab→"** and it should now print your own GPU (e.g. `RTX 4070`) on CUDA, `mps` on Apple Silicon, or fall back to `cpu`.
-
-Everything else — Part 1 dataset prep, Part 2 training, Part 3 inference — runs identically.
 
 ---
 
@@ -1731,6 +1731,8 @@ What are the key **hyperparameters** you can fine-tune to improve performance?
 
 Apply your improvement plan from Q8 (modify code, label more images, tune hyperparameters, etc.) and re-run. Points are awarded based on how much your final **defect IoU** exceeds the baseline, and on the visual cleanliness of predicted masks on the unlabeled test images.
 
+
+(The end of the Jupyter notebook.)
 ---
 
 ## Submission (baseline, 100%)
@@ -1738,11 +1740,11 @@ Apply your improvement plan from Q8 (modify code, label more images, tune hyperp
 - Upload your updated `.ipynb` with every question answered (80% = 8*10%).
 - U-Net performance improved with new results shown in the notebook (20%).
 
-## Bonus Points (extra, 20%):
+### Submission bonus (extra, 20%):
 - Upload 5 screenshots of using LabelMe on previous unlabeled images (5 of them) from the training image folder "/mos2".
 - Within LabelMe GUI, You are welcome to use either Create-AI-Polygon (SAM2 balanced), or just label by hand: Create-Polygons.
 - Example:
 
 ![Bonus screenshot using LabelMe](github_images/bonus-screenshot-using-labelme.png)
 
-(The End)
+(The end of this tutorial.)
