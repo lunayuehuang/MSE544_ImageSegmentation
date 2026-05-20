@@ -209,6 +209,9 @@ Upload `image_data.zip` to the Colab session by opening the **Files** tab in the
 
 Then run the three setup cells below to clean up any previous outputs, unzip the image dataset, and confirm that PyTorch can see your GPU. You will only need to run Step 0.A and Step 0.B once per session — Step 0.C is worth re-running any time you reconnect to a Colab runtime to make sure a GPU is still attached.
 
+**Note: By default, the working directory on Google Colab is `/content/`. You might need to adjust your folder directory path if running on your local computer later, or on another Jupyter provider.**
+
+
 ### Step 0.A. Optional cleanup (skip on first run)
 
 Open your notebook and run the cell below to wipe any previous `mos2*` outputs under `/content/`. Leave it commented unless you really want a fresh start — on a local machine this would delete files permanently.
