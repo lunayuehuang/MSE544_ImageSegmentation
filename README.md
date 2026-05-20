@@ -1632,7 +1632,7 @@ After you've added or updated labels locally, re-zip the dataset folders into a 
 
 ![Update image_data.zip on Colab after labeling](github_images/labelme9-update-zip-file-colab.png)
 
-**Another good option is just uploading the new labels (.json files) to Google Colab training image folder "/mos2". ** 
+**Another good option is just uploading the new labels (.json files) to Google Colab training image folder "/mos2".** 
 
 ---
 
