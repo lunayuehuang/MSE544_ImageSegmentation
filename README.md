@@ -211,6 +211,8 @@ Then run the three setup cells below to clean up any previous outputs, unzip the
 
 **Note: By default, the working directory on Google Colab is `/content/`. You might need to adjust your folder directory path if running on your local computer later, or on another Jupyter provider.**
 
+![Print working directory on Google Colab](github_images/print-working-directory-GoogleColab.png)
+
 
 ### Step 0.A. Optional cleanup (skip on first run)
 
