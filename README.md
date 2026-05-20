@@ -1751,12 +1751,14 @@ Apply your improvement plan from Q8 (modify code, label more images, tune hyperp
 
 ---
 
-## Submission Requirements (baseline 100%)
+## Submission Requirements 
+
+### Baseline 100%
 
 - Upload your updated `.ipynb` with every question answered (80% = 8*10%).
 - U-Net performance improved with new results shown in the notebook (20%).
 
-### Submission Bonus (extra 20%):
+### Bonus (extra) 20%:
 - Upload 5 screenshots of using LabelMe on previous unlabeled images (5 of them) from the training image folder "/mos2".
 - Within LabelMe GUI, You are welcome to use either Create-AI-Polygon (SAM2 balanced), or just label by hand: Create-Polygons.
 - Example:
