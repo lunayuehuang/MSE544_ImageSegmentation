@@ -1622,7 +1622,7 @@ Type **Enter** on your keyboard to confirm the polygon, and then pick/type the l
 
 ![Pick the label name](github_images/labelme7b-pick-label-name.png)
 
-Click **Save** (or `Ctrl+S`) after each image — LabelMe writes a `.json` file next to the `.png` with the polygon coordinates.  (**Save Automatically** is another good option.)
+Click **Save** (or `Ctrl+S`) after labeling each image — LabelMe writes a `.json` file next to the `.png` with the polygon coordinates.  (**Save Automatically** is another good option.)
 
 ![Save the labels](github_images/labelme8-save-the-labels.png)
 
@@ -1631,6 +1631,8 @@ Click **Save** (or `Ctrl+S`) after each image — LabelMe writes a `.json` file 
 After you've added or updated labels locally, re-zip the dataset folders into a new `image_data.zip` and replace the old one in your Colab session (drag-and-drop into `/content/`, or right-click → **Replace**). Then re-run **Part 0 — Setup of Google Colab → Step 0.B (unzip)** so Colab picks up your fresh `.json` files before Part 1.
 
 ![Update image_data.zip on Colab after labeling](github_images/labelme9-update-zip-file-colab.png)
+
+**Another good option is just uploading the new labels (.json files) to Google Colab training image folder "/mos2". ** 
 
 ---
 
