@@ -690,7 +690,7 @@ binary (`0` = background, `1` = defect) so the rest of the pipeline stays simple
 
 **Class imbalance** — defects are rare, so images containing one get a `+3.0`
 sampling weight. PyTorch's `WeightedRandomSampler` then draws them 4× more often,
-ensuring defect examples appear in most batches rather than being drowned out by
+ensuring defect examples appear in most **patches** rather than being drowned out by
 background.
 
 ```python
