@@ -541,6 +541,7 @@ Loads the first training patch that contains a defect and overlays its mask in *
 # ============================================================
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
+import random
 
 CLASS_COLORS = {
     0: 'black',      # background
