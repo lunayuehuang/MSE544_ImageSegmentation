@@ -358,7 +358,7 @@ print('Helpers defined.')
 
 ### Step 1.D. Augmentation helpers
 
-Declares the augmentation tag list (`AUG_TAGS`) and a single `augment_array` function that applies the same flip/rotation to image and mask in lock-step. **Full augmentation uses all 6 transforms** — `orig`, `fliplr`, `flipud`, `rot90`, `rot180`, `rot270` — which multiplies the training set 6× and is one of the easiest places to lift defect IoU (see Q3). For a faster baseline run, drop back to `['orig', 'fliplr']`.
+Declares the augmentation tag list (`AUG_TAGS`) and a single `augment_array` function that applies the same flip/rotation to image and mask in lock-step. **Full augmentation uses all 6 transforms** — `orig`, `fliplr`, `flipud`, `rot90`, `rot180`, `rot270` — which multiplies the training set 6× and is one of the easiest places to lift defect IoU (see [Q3](#question-3-10)). For a faster baseline run, drop back to `['orig', 'fliplr']`.
 
 ```python
 # ============================================================
@@ -591,7 +591,7 @@ Expected output — a training patch alongside its yellow defect-mask overlay:
 
 ### Step 1.I. Class balance stats
 
-Counts pixels per class across the training set and prints the percentages. You should see **background ≫ defect** (often >95% vs <5%); that imbalance directly motivates the class weighting and weighted sampler used later (Q4).
+Counts pixels per class across the training set and prints the percentages. You should see **background ≫ defect** (often >95% vs <5%); that imbalance directly motivates the class weighting and weighted sampler used later ([Q4](#question-4-10)).
 
 ```python
 # ============================================================
@@ -746,7 +746,7 @@ class MoS2Dataset(Dataset):
 
 ### Step 2.D. Create the U-Net model
 
-Defines the U-Net architecture: a `DoubleConv` block (Conv → GroupNorm → ReLU, twice, with optional dropout), a 4-level encoder/decoder with channel widths `32 → 64 → 128 → 256 → 512`, and **skip connections** that concatenate matching encoder features into each decoder block. The final `1×1` conv emits per-class logits at full resolution. See Q5 for why skip connections are crucial for pixel-wise tasks.
+Defines the U-Net architecture: a `DoubleConv` block (Conv → GroupNorm → ReLU, twice, with optional dropout), a 4-level encoder/decoder with channel widths `32 → 64 → 128 → 256 → 512`, and **skip connections** that concatenate matching encoder features into each decoder block. The final `1×1` conv emits per-class logits at full resolution. See [Q5](#question-5-10) for why skip connections are crucial for pixel-wise tasks.
 
 ```python
 import torch.nn as nn
@@ -840,7 +840,7 @@ avoiding false alarms.
 
 #### Current setup and homework hook (Q6/Q8)
 
-`total_loss` currently returns **focal CE only**. Questions 6 and 8 ask you to
+`total_loss` currently returns **focal CE only**. [Question 6](#question-6-10) and [Question 8](#question-8-10) ask you to
 improve false-negative performance — the commented-out Tversky term is one place
 to look.
 
@@ -948,7 +948,7 @@ Expected output — `Using device: cuda` on a Colab T4 runtime:
 
 ### Step 2.G. Training loop
 
-The main training cell. Sets the hyperparameters (`BATCH_SIZE`, `EPOCHS=10` baseline, `LR=1e-4`, `WEIGHT_DECAY=3e-4`), builds a **weighted-sampler DataLoader** for training, and runs an epoch loop with AdamW, gradient clipping, and `ReduceLROnPlateau`. Each epoch tracks train/val loss and defect IoU; the **best-IoU checkpoint** is saved to `unet_best.pt`, with early stopping after 3 stagnant epochs. **Bumping `EPOCHS` to 20–30** is the simplest knob for Q7.
+The main training cell. Sets the hyperparameters (`BATCH_SIZE`, `EPOCHS=10` baseline, `LR=1e-4`, `WEIGHT_DECAY=3e-4`), builds a **weighted-sampler DataLoader** for training, and runs an epoch loop with AdamW, gradient clipping, and `ReduceLROnPlateau`. Each epoch tracks train/val loss and defect IoU; the **best-IoU checkpoint** is saved to `unet_best.pt`, with early stopping after 3 stagnant epochs. **Bumping `EPOCHS` to 20–30** is the simplest knob for [Q7](#question-7-10).
 
 ```python
 from tqdm import tqdm
@@ -1744,7 +1744,7 @@ What are the key **hyperparameters** you can fine-tune to improve performance?
 
 ### Improvement — **20%**
 
-Apply your improvement plan from Q8 (modify code, label more images, tune hyperparameters, etc.) and re-run. Points are awarded based on how much your final **defect IoU** exceeds the baseline, and on the visual cleanliness of predicted masks on the unlabeled test images.
+Apply your improvement plan from [Q8](#question-8-10) (modify code, label more images, tune hyperparameters, etc.) and re-run. Points are awarded based on how much your final **defect IoU** exceeds the baseline, and on the visual cleanliness of predicted masks on the unlabeled test images.
 
 (The end of your Jupyter notebook.)
 (Once you are done, please download a copy of this *.ipynb with all the results inline, and submit to Canvas hands-on assignment page.)
