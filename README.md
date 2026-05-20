@@ -97,6 +97,8 @@ You might have no idea about any of these comparisons at this moment, but soon y
 
 [Submission Requirements](#submission-baseline-100)
 
+---
+
 ## Learning Objectives
 
 - What is image segmentation?
