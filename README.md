@@ -1614,9 +1614,13 @@ For new defects, the fastest workflow is the built-in **AI Polygon** tool, which
 
 ![AI-assisted labeling with SAM2](github_images/labelme6-using-AI-labeling-SAM2.png)
 
-When the label-name dialog appears, **always use the same label name** (`defect`) so every void in every image maps to the same class. The training pipeline only recognises labels listed in `LABEL_MAP`.
+When the label-name dialog appears, **always use the same label name** (`defect`) so every void in every image maps to the same class. The training pipeline only recognises labels listed in the `Label List`.
 
 ![Select the same label name for every defect](github_images/labelme7-select-same-label-name.png)
+
+Type enter on your keyboard to confirm the polygon, and then pick/type the label name `defect`.
+
+![Pick the label name](github_images/labelme7b-pick-label-name.png)
 
 Click **Save** (or `Ctrl+S`) after each image — LabelMe writes a `.json` file next to the `.png` with the polygon coordinates.
 
