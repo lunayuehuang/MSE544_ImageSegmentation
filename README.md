@@ -180,12 +180,12 @@ An example is given below:
 
 ### 5. Hands-on Workflow Overview
 
-1). Download the **image_data.zip** from UW Canvas page.
-2). **Create a new Jupyter notebook on Google Colab**, then change the runtime to a free **Nvidia T4 GPU** (`Runtime → Change runtime type → T4 GPU`). **Upload** the image dataset (image_data.zip) to **Google Colab**, and selectively copy-paste the code cells from this tutorial.
-3). **Image preprocessing**: train/val split, crop into smaller patches, convert LabelMe `.json` → `.png` masks, and apply augmentation (flip, rotation, …) to **training patches only**.
-4). **U-Net training & validation**: load patches, define the model and hyperparameters, choose a loss (CrossEntropy, Dice, …), and evaluate using **IoU (Intersection over Union)**. Visualise training history, validation predictions vs ground truth, and predictions on unlabeled test images.
-5). **Analyze** validation/test results, answer the 8 questions, then apply your improvement plan and re-run.
-6). **Manual labeling** of raw MoS₂ images via the LabelMe desktop app. (Some training/validation labels are pre-provided by TA Max Fu.)
+(1). Download the **image_data.zip** from UW Canvas page.
+(2). **Create a new Jupyter notebook on Google Colab**, then change the runtime to a free **Nvidia T4 GPU** (`Runtime → Change runtime type → T4 GPU`). **Upload** the image dataset (image_data.zip) to **Google Colab**, and selectively copy-paste the code cells from this tutorial.
+(3). **Image preprocessing**: train/val split, crop into smaller patches, convert LabelMe `.json` → `.png` masks, and apply augmentation (flip, rotation, …) to **training patches only**.
+(4). **U-Net training & validation**: load patches, define the model and hyperparameters, choose a loss (CrossEntropy, Dice, …), and evaluate using **IoU (Intersection over Union)**. Visualise training history, validation predictions vs ground truth, and predictions on unlabeled test images.
+(5). **Analyze** validation/test results, answer the 8 questions, then apply your improvement plan and re-run.
+(6). **Manual labeling** of raw MoS₂ images via the LabelMe desktop app. (Some training/validation labels are pre-provided by TA Max Fu.)
 
 ---
 
