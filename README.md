@@ -62,7 +62,7 @@ You might have no idea about any of these comparisons at this moment, but soon y
 - [Step 2.B. (Optional) Install dependencies](#step-2b-optional-install-dependencies)
 - [Step 2.C. MoS2 Dataset (`Dataset` + `DataLoader`)](#step-2c-mos2-dataset-dataset--dataloader)
 - [Step 2.D. Create the U-Net model](#step-2d-create-the-u-net-model)
-- [Step 2.E. Class weights and loss (Focal CE + optional focal Tversky)](#step-2e-class-weights-and-loss-focal-ce--optional-focal-tversky)
+- [Step 2.E. Class Weights and Loss](#step-2e-class-weights-and-loss)
 - [Step 2.F. Pick device](#step-2f-pick-device)
 - [Step 2.G. Training loop](#step-2g-training-loop)
 - [Step 2.H. Plot training curves (training history)](#step-2h-plot-training-curves-training-history)
@@ -95,7 +95,7 @@ You might have no idea about any of these comparisons at this moment, but soon y
 
 [Disclaimer](#disclaimer)
 
-[Submission Requirements](#submission-baseline-100)
+[Submission Requirements](#submission-requirements-baseline-100)
 
 ---
 
@@ -1733,16 +1733,16 @@ What are the key **hyperparameters** you can fine-tune to improve performance?
 
 Apply your improvement plan from Q8 (modify code, label more images, tune hyperparameters, etc.) and re-run. Points are awarded based on how much your final **defect IoU** exceeds the baseline, and on the visual cleanliness of predicted masks on the unlabeled test images.
 
-
 (The end of the Jupyter notebook.)
+
 ---
 
-## Submission (baseline, 100%)
+## Submission Requirements (baseline 100%)
 
 - Upload your updated `.ipynb` with every question answered (80% = 8*10%).
 - U-Net performance improved with new results shown in the notebook (20%).
 
-### Submission bonus (extra, 20%):
+### Submission Bonus (extra 20%):
 - Upload 5 screenshots of using LabelMe on previous unlabeled images (5 of them) from the training image folder "/mos2".
 - Within LabelMe GUI, You are welcome to use either Create-AI-Polygon (SAM2 balanced), or just label by hand: Create-Polygons.
 - Example:
