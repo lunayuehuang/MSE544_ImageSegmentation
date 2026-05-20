@@ -1622,7 +1622,7 @@ Type **Enter** on your keyboard to confirm the polygon, and then pick/type the l
 
 ![Pick the label name](github_images/labelme7b-pick-label-name.png)
 
-Click **Save** (or `Ctrl+S`) after each image — LabelMe writes a `.json` file next to the `.png` with the polygon coordinates.
+Click **Save** (or `Ctrl+S`) after each image — LabelMe writes a `.json` file next to the `.png` with the polygon coordinates.  (**Save Automatically** is another good option.)
 
 ![Save the labels](github_images/labelme8-save-the-labels.png)
 
