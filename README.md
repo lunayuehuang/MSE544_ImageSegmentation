@@ -95,7 +95,7 @@ You might have no idea about any of these comparisons at this moment, but soon y
 
 [Disclaimer](#disclaimer)
 
-[Submission Requirements](#submission-requirements-baseline-100)
+[Submission Requirements](#submission-requirements)
 
 ---
 
