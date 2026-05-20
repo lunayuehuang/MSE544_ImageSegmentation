@@ -1746,7 +1746,8 @@ What are the key **hyperparameters** you can fine-tune to improve performance?
 
 Apply your improvement plan from Q8 (modify code, label more images, tune hyperparameters, etc.) and re-run. Points are awarded based on how much your final **defect IoU** exceeds the baseline, and on the visual cleanliness of predicted masks on the unlabeled test images.
 
-(The end of the Jupyter notebook.)
+(The end of your Jupyter notebook.)
+(Once you are done, please download a copy of this *.ipynb with all the results inline, and submit to Canvas hands-on assignment page.)
 
 ---
 
