@@ -174,8 +174,8 @@ An example is given below:
 | Folder                                | Contents                                                                                   |
 | ------------------------------------- | ------------------------------------------------------------------------------------------ |
 | `./mos2`                            | 10 training images + 5 training labels (the other 5 labels were intentionally removed)     |
-| `./mos2_additional_training_labels` | 2 extra training labels — try adding them back to `./mos2` to see if training improves. |
-| `./mos2_val_images_labeled`         | 3 fixed validation images (used to evaluate your optimisation).                            |
+| `./mos2_additional_training_labels` | 2 extra training labels — please try adding them back to `./mos2` to see if training improves. |
+| `./mos2_val_images_labeled`         | 3 fixed validation images + 5 labels (used to evaluate your optimisation result).                            |
 | `./mos2_test_images_unlabeled`      | 10+ unlabeled test images for final qualitative evaluation.                                |
 
 ### 5. Hands-on Workflow Overview
