@@ -1,6 +1,6 @@
 # Computer Vision: Image Segmentation using U-Net
 
-**Authors: Huilong (Max) Fu, Prof. Luna Huang, Andrew Scott**
+**Authors: Huilong (Max) Fu, Prof. Luna Huang**
 
 **Date: Spring 2026**
 
