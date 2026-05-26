@@ -1735,7 +1735,9 @@ What are the key **hyperparameters** you can fine-tune to improve performance?
 ````markdown
 ### Question 8 *(10%)*
 
-**Evaluate** the current training history and test results — is it good? If not, how can it be improved?
+**Evaluate** The workflow presented in this module demonstrates a basic image segmentation task using a minimal labeled dataset and produces preliminary segmentation results.
+
+Based on your understanding of the workflow, propose several plausible strategies that could improve the segmentation performance and overall training outcome.
 
 *Your answer:*
 ````
